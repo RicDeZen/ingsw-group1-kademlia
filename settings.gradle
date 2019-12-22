@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name='ingsw-group1-kademlia'
