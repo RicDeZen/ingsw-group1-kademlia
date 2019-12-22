@@ -8,6 +8,15 @@
         </compositeConfiguration>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/demo" />
+            <option value="$PROJECT_DIR$/ingsw-group1-message-library/msglibrary" />
+            <option value="$PROJECT_DIR$/ingsw-group1-replicated-network/repnetwork" />
+            <option value="$PROJECT_DIR$/kademlia" />
+          </set>
+        </option>
         <option name="resolveModulePerSourceSet" value="false" />
         <option name="testRunner" value="PLATFORM" />
       </GradleProjectSettings>

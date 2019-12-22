@@ -1,4 +1,4 @@
-include ':app', ':msglibrary', ':repnetwork'
+include ':demo', ':msglibrary', ':repnetwork', ':kademlia'
 rootProject.name='ingsw-group1-kademlia'
-project(':msglibrary').projectDir = new File('ingsw-group1-replicated-network/ingsw-group1-message-library/msglibrary')
+project(':msglibrary').projectDir = new File('ingsw-group1-message-library/msglibrary')
 project(':repnetwork').projectDir = new File('ingsw-group1-replicated-network/repnetwork')
