@@ -1,0 +1,4 @@
+[submodule "ingsw-group1-replicated-network"]
+	path = ingsw-group1-replicated-network
+	url = https://github.com/RicDeZen/ingsw-group1-replicated-network
+	branch = development
