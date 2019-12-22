@@ -2,3 +2,6 @@
 	path = ingsw-group1-replicated-network
 	url = https://github.com/RicDeZen/ingsw-group1-replicated-network
 	branch = development
+[submodule "ingsw-group1-message-library"]
+	path = ingsw-group1-message-library
+	url = https://github.com/RicDeZen/ingsw-group1-message-library
