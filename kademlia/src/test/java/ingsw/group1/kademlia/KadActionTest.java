@@ -1,6 +1,8 @@
 package ingsw.group1.kademlia;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import ingsw.group1.msglibrary.SMSMessage;
 import ingsw.group1.msglibrary.SMSPeer;
@@ -13,6 +15,7 @@ import static org.junit.Assert.assertTrue;
  * @author Pardeep
  * This tests cover for 98% the class kadAction.
  */
+@RunWith(RobolectricTestRunner.class)
 public class KadActionTest {
 
     // Also test the getter methods.
