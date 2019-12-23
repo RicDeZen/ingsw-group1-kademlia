@@ -2,6 +2,8 @@ package ingsw.group1.kademlia;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.Random;
 
@@ -12,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(RobolectricTestRunner.class)
 public class KadActionsBuilderTest {
     private SMSPeer testPeer = new SMSPeer("+390425667000");
     private StringResource testResource = new StringResource("It's me, resource!", "Henlo");
