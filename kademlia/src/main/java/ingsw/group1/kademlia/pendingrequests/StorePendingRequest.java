@@ -13,6 +13,7 @@ import ingsw.group1.kademlia.ActionPropagator;
 import ingsw.group1.kademlia.BinarySet;
 import ingsw.group1.kademlia.BitSetUtils;
 import ingsw.group1.kademlia.KadAction;
+import ingsw.group1.kademlia.KadActionsBuilder;
 import ingsw.group1.kademlia.NodeDataProvider;
 import ingsw.group1.kademlia.NodeUtils;
 import ingsw.group1.kademlia.PeerNode;
@@ -21,6 +22,8 @@ import ingsw.group1.msglibrary.SMSPeer;
 import ingsw.group1.repnetwork.StringResource;
 
 public class StorePendingRequest implements PendingRequest {
+
+    private static KadActionsBuilder actionBuilder = new KadActionsBuilder();
 
     private static final String SEPARATOR = "\r";
     private static final int DEF_PARTS = 1;
@@ -266,32 +269,22 @@ public class StorePendingRequest implements PendingRequest {
     }
 
     /**
-     * //TODO remove once KadActionBuilder is ready
+     * Method to return the correct search Action for a given Peer
      *
-     * @param peer
-     * @return
+     * @param peer the target Peer for the Action.
+     * @return the build {@code KadAction}.
      */
     private KadAction buildSearchAction(SMSPeer peer) {
-        return new KadAction(
-                peer,
-                KadAction.ActionType.STORE,
-                operationId,
-                DEF_PARTS,
-                DEF_PARTS,
-                KadAction.PayloadType.NODE_ID,
-                BitSetUtils.BitSetsToHex(targetId.getKey())
-        );
+        return actionBuilder.buildStore(operationId, peer, targetId);
     }
 
+    /**
+     * Method to return the correct final Store Action for a given Peer
+     *
+     * @param peer the target Peer for the Action.
+     * @return the build {@code KadAction}.
+     */
     private KadAction buildStoreAction(SMSPeer peer) {
-        return new KadAction(
-                peer,
-                KadAction.ActionType.STORE,
-                operationId,
-                DEF_PARTS,
-                DEF_PARTS,
-                KadAction.PayloadType.RESOURCE,
-                resourceToStore.getName() + SEPARATOR + resourceToStore.getValue()
-        );
+        return actionBuilder.buildStore(operationId, peer, resourceToStore);
     }
 }

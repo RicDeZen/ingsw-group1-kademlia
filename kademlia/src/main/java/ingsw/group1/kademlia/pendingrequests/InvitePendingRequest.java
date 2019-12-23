@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import ingsw.group1.kademlia.ActionPropagator;
 import ingsw.group1.kademlia.BinarySet;
 import ingsw.group1.kademlia.KadAction;
+import ingsw.group1.kademlia.KadActionsBuilder;
 import ingsw.group1.kademlia.NodeDataProvider;
 import ingsw.group1.kademlia.NodeUtils;
 import ingsw.group1.kademlia.PeerNode;
@@ -21,13 +22,7 @@ import ingsw.group1.msglibrary.SMSPeer;
  */
 public class InvitePendingRequest implements PendingRequest {
 
-    //TODO remove as soon as KadActionBuilder is ready.
-    /**
-     * A non-sensed payload because anything can go into the INVITE Action payload, but the
-     * default constructor requires one.
-     */
-    private static final String PAYLOAD = "owO what's this";
-    private static final int DEF_PARTS = 1;
+    private static KadActionsBuilder actionBuilder = new KadActionsBuilder();
 
     private int stepsTaken = 0;
     private int operationId;
@@ -129,19 +124,12 @@ public class InvitePendingRequest implements PendingRequest {
     }
 
     /**
-     * //TODO remove as soon as KadActionBuilder is completed.
-     * Method to return the correct Action for a Peer
+     * Method to return the correct Action for a given Peer
      *
-     * @param peer
-     * @return
+     * @param peer the target Peer for the Action.
+     * @return the build {@code KadAction}.
      */
     private KadAction buildAction(SMSPeer peer) {
-        return new KadAction(
-                peer,
-                KadAction.ActionType.INVITE, operationId,
-                DEF_PARTS,
-                DEF_PARTS,
-                KadAction.PayloadType.IGNORED, PAYLOAD
-        );
+        return actionBuilder.buildInvite(operationId, peer);
     }
 }

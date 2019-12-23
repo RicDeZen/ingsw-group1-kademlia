@@ -13,6 +13,7 @@ import ingsw.group1.kademlia.ActionPropagator;
 import ingsw.group1.kademlia.BinarySet;
 import ingsw.group1.kademlia.BitSetUtils;
 import ingsw.group1.kademlia.KadAction;
+import ingsw.group1.kademlia.KadActionsBuilder;
 import ingsw.group1.kademlia.NodeDataProvider;
 import ingsw.group1.kademlia.NodeUtils;
 import ingsw.group1.kademlia.PeerNode;
@@ -29,6 +30,9 @@ import ingsw.group1.repnetwork.StringResource;
  * @author Riccardo De Zen
  */
 public class FindValuePendingRequest implements PendingRequest {
+
+    private static KadActionsBuilder actionBuilder = new KadActionsBuilder();
+
     private static final String SEPARATOR = "\r";
     private static final int DEF_PARTS = 1;
     private static final int K = 5;
@@ -234,20 +238,12 @@ public class FindValuePendingRequest implements PendingRequest {
     }
 
     /**
-     * //TODO remove once KadActionBuilder is ready
+     * Method to return the correct Action for a given Peer
      *
-     * @param peer
-     * @return
+     * @param peer the target Peer for the Action.
+     * @return the build {@code KadAction}.
      */
     private KadAction buildAction(SMSPeer peer) {
-        return new KadAction(
-                peer,
-                KadAction.ActionType.FIND_VALUE,
-                operationId,
-                DEF_PARTS,
-                DEF_PARTS,
-                KadAction.PayloadType.NODE_ID,
-                BitSetUtils.BitSetsToHex(targetId.getKey())
-        );
+        return actionBuilder.buildFindValue(operationId, peer, targetId);
     }
 }

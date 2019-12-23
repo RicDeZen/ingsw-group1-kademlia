@@ -7,14 +7,14 @@ import ingsw.group1.repnetwork.Resource;
  * @author Niccolo' Turcato
  *
  * @param <T> the real class that describes an Action of you custom network
- * @param <P> a real type of peer that can be contacted
- * @param <R> a resource type
- * @param <N> a Node of the network
+ * @param <P> the type of Peer that can be contacted
+ * @param <R> the Resource type in the Network
+ * @param <K> the type of id for Nodes in the Network
  *
  * Each response is based on a request
  * Responses (ANSW) are built starting from the request (mainly to retrieve the action ID/number)
  */
-public interface ActionsBuilder<T extends DistributedNetworkAction, P extends Peer, R extends Resource, N extends Node> {
+public interface ActionsBuilder<T extends DistributedNetworkAction, P extends Peer, R extends Resource, K> {
 
     /**
      * @param peer the peer that will be pinged
@@ -44,11 +44,11 @@ public interface ActionsBuilder<T extends DistributedNetworkAction, P extends Pe
 
     /**
      * @param peer the receiving peer
-     * @param node the node to be stored
+     * @param target the id for the Resource
      * @param actionID a new actionID defined by the class calling this method
      * @return an action built to execute the store (node) command to the peer
      */
-    T buildStore(int actionID, P peer, N node);
+    T buildStore(int actionID, P peer, K target);
     /**
      * @param peer the receiving peer
      * @param resource the resource to be stored
@@ -72,11 +72,11 @@ public interface ActionsBuilder<T extends DistributedNetworkAction, P extends Pe
 
     /**
      * @param peer the peer that will receive the built action command
-     * @param node the node of which find its address (on the used network)
+     * @param target the id for the Node to find
      * @param actionID a new actionID defined by the class calling this method
      * @return an action built to execute the find node command to the peer
      */
-    T buildFindNode(int actionID, P peer, N node);
+    T buildFindNode(int actionID, P peer, K target);
 
     /**
      * @param request the received find node request from a peer
@@ -88,11 +88,11 @@ public interface ActionsBuilder<T extends DistributedNetworkAction, P extends Pe
 
     /**
      * @param peer the peer that will receive the built action command
-     * @param resourceNode the node representing the searched resource
+     * @param target the id for the Resource to find
      * @param actionID a new actionID defined by the class calling this method
      * @return an action built to execute the find value (of a resource) command to the peer
      */
-    T buildFindValue(int actionID,P peer, N resourceNode);
+    T buildFindValue(int actionID,P peer, K target);
     /**
      * @param request the received find value request from a peer
      * @param resource if found the searched resource (by the requesting peer), otherwise a resource containing a fixed token (that indicated that the resource hasn't been found)
