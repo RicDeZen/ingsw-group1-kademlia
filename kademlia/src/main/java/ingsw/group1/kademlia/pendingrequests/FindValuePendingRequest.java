@@ -95,6 +95,14 @@ public class FindValuePendingRequest implements PendingRequest {
     }
 
     /**
+     * @return the current {@link RequestState} for this {@code PendingRequest}.
+     */
+    @Override
+    public RequestState getRequestState(){
+        return RequestState.PENDING_RESPONSES;
+    }
+
+    /**
      * @see PendingRequest#start()
      * A {@link FindValuePendingRequest} propagates a fixed amount of Actions of type
      * {@link KadAction.ActionType#FIND_VALUE} on startup.

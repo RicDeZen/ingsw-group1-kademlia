@@ -22,24 +22,14 @@ import ingsw.group1.repnetwork.StringResource;
 
 public class StorePendingRequest implements PendingRequest {
 
-    /**
-     * Enum defining possible States for this PendingRequest:
-     * SEARCHING: The PendingRequest is searching for the most suitable new Owner.
-     * STORING: The PendingRequest is trying to store the Resource into the Owner found in the
-     * previous phase.
-     */
-    private enum RequestState {
-        SEARCHING,
-        STORING
-    }
-
     private static final String SEPARATOR = "\r";
     private static final int DEF_PARTS = 1;
     private static final int K = 5;
     private static final int N = 128;
 
     private int totalStepsTaken = 0;
-    private RequestState requestState = RequestState.SEARCHING;
+    //TODO
+    private RequestState requestState = null;
     private int operationId;
     private StringResource resourceToStore;
     private BinarySet targetId;
@@ -102,6 +92,14 @@ public class StorePendingRequest implements PendingRequest {
     }
 
     /**
+     * @return the current {@link RequestState} for this {@code PendingRequest}.
+     */
+    @Override
+    public RequestState getRequestState(){
+        return RequestState.PENDING_RESPONSES;
+    }
+
+    /**
      * @see PendingRequest#start()
      * A {@link StorePendingRequest} propagates a fixed amount of Actions of type
      * {@link KadAction.ActionType#STORE} on startup.
@@ -133,12 +131,7 @@ public class StorePendingRequest implements PendingRequest {
     public void nextStep(@NonNull KadAction action) {
         if (!isActionPertinent(action)) return;
         switch (requestState){
-            case SEARCHING:
-                handleSearchResponse(action);
-                break;
-            case STORING:
-                handleStoreResponse(action);
-                break;
+            //TODO
         }
         totalStepsTaken++;
     }

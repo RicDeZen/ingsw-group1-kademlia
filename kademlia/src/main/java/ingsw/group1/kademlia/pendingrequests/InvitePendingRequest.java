@@ -79,6 +79,14 @@ public class InvitePendingRequest implements PendingRequest {
     }
 
     /**
+     * @return the current {@link RequestState} for this {@code PendingRequest}.
+     */
+    @Override
+    public RequestState getRequestState(){
+        return RequestState.PENDING_RESPONSES;
+    }
+
+    /**
      * @see PendingRequest#start()
      * The only propagated Action is a Request of type
      * {@link KadAction.ActionType#INVITE}.

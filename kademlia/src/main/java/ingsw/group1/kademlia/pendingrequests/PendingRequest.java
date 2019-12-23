@@ -8,13 +8,26 @@ import ingsw.group1.kademlia.KadAction;
  * Interface defining the standard behaviour of PendingRequests.
  * A {@code PendingRequest} should call an {@link ingsw.group1.kademlia.ActionPropagator} in
  * order to propagate through the Network the Requests it's willing to send.
- * A {@code PendingRequest} PendingRequest should ignore attempts to perform further steps with an
- * impertinent Action, where "pertinent" is based on the criteria defined in the implementation for
- * {@link PendingRequest#isActionPertinent(KadAction)}
+ * A {@code PendingRequest} should ignore attempts to perform steps with an impertinent Action,
+ * where "pertinent" is based on the criteria defined in the implementation for
+ * {@link PendingRequest#isActionPertinent(KadAction)}.
+ * When a {@code PendingRequest} reaches the {@link RequestState#COMPLETED} state, it should not
+ * perform further steps.
  *
  * @author Riccardo De Zen
  */
 public interface PendingRequest {
+    /**
+     * Enum defining the current operative state of a {@code PendingRequest}.
+     */
+    enum RequestState {
+        //The {@code PendingRequest} is waiting for the result of another Request.
+        PENDING_SUBREQUEST,
+        //The {@code PendingRequest} is waiting for Responses directed to itself.
+        PENDING_RESPONSES,
+        //The {@code PendingRequest} has finished its execution and returned its result.
+        COMPLETED;
+    }
 
     /**
      * @return the number of steps performed (number of times nextStep took a valid Action and acted
@@ -26,6 +39,11 @@ public interface PendingRequest {
      * @return the unique Code for this PendingRequest.
      */
     int getOperationId();
+
+    /**
+     * @return the current {@link RequestState} for this {@code PendingRequest}.
+     */
+    RequestState getRequestState();
 
     /**
      * Method used to start the PendingRequest, propagating its first Action.

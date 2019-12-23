@@ -94,6 +94,14 @@ public class FindNodePendingRequest implements PendingRequest {
     }
 
     /**
+     * @return the current {@link RequestState} for this {@code PendingRequest}.
+     */
+    @Override
+    public RequestState getRequestState(){
+        return RequestState.PENDING_RESPONSES;
+    }
+
+    /**
      * @see PendingRequest#start()
      * A {@link FindNodePendingRequest} propagates a fixed amount of Actions of type
      * {@link ingsw.group1.kademlia.KadAction.ActionType#FIND_NODE} on startup.
