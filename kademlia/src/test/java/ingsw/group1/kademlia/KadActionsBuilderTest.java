@@ -100,7 +100,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildStoreNodeTest() {
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
-        action = testingBuilder.buildStore(random.nextInt(maxTestingID-1)+1, testPeer, new PeerNode(key));
+        action = testingBuilder.buildStore(random.nextInt(maxTestingID-1)+1, testPeer, key);
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.STORE, action.getActionType());
@@ -111,7 +111,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildStoreNodeAnswTest(){
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
-        KadAction storeNode = testingBuilder.buildStore(random.nextInt(maxTestingID-1)+1, testPeer, new PeerNode(key));
+        KadAction storeNode = testingBuilder.buildStore(random.nextInt(maxTestingID-1)+1, testPeer, key);
         action = testingBuilder.buildStoreAnsw(storeNode, new SMSPeer[]{testPeer})[0]; //1 smspeer -> 1 action
         testValidity(1, 1);
         testPeerCoherent(testPeer);
@@ -158,7 +158,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildFindNodeTest() {
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
-        action = testingBuilder.buildFindNode(random.nextInt(maxTestingID-1)+1, testPeer, new PeerNode(key));
+        action = testingBuilder.buildFindNode(random.nextInt(maxTestingID-1)+1, testPeer, key);
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.FIND_NODE, action.getActionType());
@@ -169,7 +169,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildFindNodeAnswTest(){
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
-        KadAction findNode = testingBuilder.buildFindNode(random.nextInt(maxTestingID-1)+1, testPeer, new PeerNode(key));
+        KadAction findNode = testingBuilder.buildFindNode(random.nextInt(maxTestingID-1)+1, testPeer, key);
         action = testingBuilder.buildFindNodeAnsw(findNode, new SMSPeer[]{testPeer})[0];
         testValidity(1, 1);
         testPeerCoherent(testPeer);
@@ -189,7 +189,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildFindValueTest() {
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
-        action = testingBuilder.buildFindValue(random.nextInt(maxTestingID-1)+1, testPeer, new ResourceNode(key, "stuff"));
+        action = testingBuilder.buildFindValue(random.nextInt(maxTestingID-1)+1, testPeer, key);
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.FIND_VALUE, action.getActionType());
@@ -200,7 +200,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildFindValueResFOUNDAnswTest(){
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
-        KadAction findResource = testingBuilder.buildFindValue(random.nextInt(maxTestingID-1)+1, testPeer, new ResourceNode(key, "stuff"));
+        KadAction findResource = testingBuilder.buildFindValue(random.nextInt(maxTestingID-1)+1, testPeer, key);
         action = testingBuilder.buildFindValueAnsw(findResource, testResource);
         testValidity(1, 1);
         testPeerCoherent(testPeer);
@@ -218,7 +218,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildFindValueResNOTFOUNDAnswTest() {
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
-        KadAction findResource = testingBuilder.buildFindValue(random.nextInt(maxTestingID - 1) + 1, testPeer, new ResourceNode(key, "stuff"));
+        KadAction findResource = testingBuilder.buildFindValue(random.nextInt(maxTestingID - 1) + 1, testPeer, key);
         action = testingBuilder.buildFindValueAnsw(findResource, new SMSPeer[]{testPeer})[0];
         testValidity(1, 1);
         testPeerCoherent(testPeer);
