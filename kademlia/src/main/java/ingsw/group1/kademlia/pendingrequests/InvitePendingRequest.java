@@ -24,9 +24,11 @@ public class InvitePendingRequest implements PendingRequest {
 
     private static KadActionsBuilder actionBuilder = new KadActionsBuilder();
 
+    private RequestState requestState = RequestState.IDLE;
     private int stepsTaken = 0;
     private int operationId;
     private KadAction inviteAction;
+
     private ActionPropagator actionPropagator;
     private NodeDataProvider<BinarySet, PeerNode> nodeProvider;
     private InviteResultListener resultListener;
@@ -78,7 +80,7 @@ public class InvitePendingRequest implements PendingRequest {
      */
     @Override
     public RequestState getRequestState(){
-        return RequestState.PENDING_RESPONSES;
+        return requestState;
     }
 
     /**
@@ -89,10 +91,12 @@ public class InvitePendingRequest implements PendingRequest {
     @Override
     public void start() {
         actionPropagator.propagateAction(inviteAction);
+        requestState = RequestState.PENDING_RESPONSES;
     }
 
     /**
      * @return true if the given action can be used to continue the operation, false otherwise.
+     * The action is always ignored if the current state is not {@link RequestState#PENDING_RESPONSES}.
      * The action is "pertinent" if:
      * - The {@code ActionType} of {@code action} is
      * {@link KadAction.ActionType#INVITE_ANSWER}.
@@ -102,6 +106,7 @@ public class InvitePendingRequest implements PendingRequest {
      */
     @Override
     public boolean isActionPertinent(@NonNull KadAction action) {
+        if(getRequestState() != RequestState.PENDING_RESPONSES) return false;
         return KadAction.ActionType.INVITE_ANSWER == action.getActionType() &&
                 action.getOperationId() == inviteAction.getOperationId() &&
                 action.getPeer().equals(inviteAction.getPeer());
@@ -120,6 +125,7 @@ public class InvitePendingRequest implements PendingRequest {
                 NodeUtils.DEFAULT_KEY_LENGTH);
         nodeProvider.visitNode(invitedNode);
         resultListener.onInviteResult(getOperationId(), invitedNode, inviteAccepted);
+        requestState = RequestState.COMPLETED;
         stepsTaken++;
     }
 

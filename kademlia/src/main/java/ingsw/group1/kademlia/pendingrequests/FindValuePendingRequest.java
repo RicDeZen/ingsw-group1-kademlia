@@ -34,13 +34,14 @@ public class FindValuePendingRequest implements PendingRequest {
     private static KadActionsBuilder actionBuilder = new KadActionsBuilder();
 
     private static final String SEPARATOR = "\r";
-    private static final int DEF_PARTS = 1;
     private static final int K = 5;
     private static final int N = 128;
 
+    private RequestState requestState = RequestState.IDLE;
     private int totalStepsTaken = 0;
     private int operationId;
     private BinarySet targetId;
+
     private ActionPropagator actionPropagator;
     private NodeDataProvider<BinarySet, PeerNode> nodeProvider;
     private FindValueResultListener resultListener;
@@ -102,8 +103,8 @@ public class FindValuePendingRequest implements PendingRequest {
      * @return the current {@link RequestState} for this {@code PendingRequest}.
      */
     @Override
-    public RequestState getRequestState(){
-        return RequestState.PENDING_RESPONSES;
+    public RequestState getRequestState() {
+        return requestState;
     }
 
     /**
@@ -115,10 +116,13 @@ public class FindValuePendingRequest implements PendingRequest {
     public void start() {
         List<PeerNode> closestNodes = nodeProvider.getKClosest(K, targetId);
         propagateToAll(closestNodes);
+        requestState = RequestState.PENDING_RESPONSES;
     }
 
     /**
      * @return true if the given action can be used to continue the operation, false otherwise.
+     * The action is always ignored if the current state is not
+     * {@link RequestState#PENDING_RESPONSES}.
      * The action is "pertinent" if:
      * - The {@code ActionType} of {@code action} is
      * {@link KadAction.ActionType#FIND_VALUE_ANSWER}.
@@ -127,6 +131,7 @@ public class FindValuePendingRequest implements PendingRequest {
      */
     @Override
     public boolean isActionPertinent(@NonNull KadAction action) {
+        if (getRequestState() != RequestState.PENDING_RESPONSES) return false;
         return KadAction.ActionType.FIND_VALUE_ANSWER == action.getActionType() &&
                 getOperationId() == action.getOperationId();
     }
@@ -181,6 +186,7 @@ public class FindValuePendingRequest implements PendingRequest {
                 StringResource foundResource = StringResource.parseString(action.getPayload(),
                         SEPARATOR);
                 resultListener.onFindValueResult(operationId, sender, foundResource);
+                requestState = RequestState.COMPLETED;
                 break;
             default:
                 break;
@@ -188,19 +194,28 @@ public class FindValuePendingRequest implements PendingRequest {
     }
 
     /**
-     * Method determining which state the {@code PendingRequest} is in. The states are defined as
+     * Method determining which "phase" the {@code PendingRequest} is in. The states are defined as
      * follows:
-     * - WAITING: not all expected Responses came from all Nodes that were expected to answer.
-     * - ROUND_FINISHED: all expected Responses came, but some Nodes closer to our target are in
-     * {@link FindValuePendingRequest#peerBuffer}, so another round of Request propagation is due.
-     * - RESOURCE_NOT_FOUND: same as round finished but no closer Nodes are available and the
-     * Resource hasn't been found, which means the Resource doesn't exist.
+     * 1. Not all expected Responses came from all Nodes that were expected to answer.
+     * 2. All expected Responses came, but some Nodes closer to our target are in
+     * {@link FindValuePendingRequest#peerBuffer}, so another round of Requests propagation is due.
+     * 3. Same as phase 2 but no closer Nodes are available. Which means the
+     * Resource doesn't exist or is not reachable, otherwise, one of the Nodes in
+     * {@link FindValuePendingRequest#visitedNodes} would have answered with its value.
      */
     private void checkStatus() {
-        if (!(pendingResponses.isEmpty() && expectedResponses == 0)) return;
-        if (peerBuffer.isEmpty()) {
+        if (!(pendingResponses.isEmpty() && expectedResponses == 0)){
+            //Phase 1, other Responses are awaited.
+            return;
+        }
+        if (!peerBuffer.isEmpty()) {
+            //Phase 2, another Request round is due.
+            nextRoundOfRequests();
+        }
+        else{
+            //Phase 3, can't go further. The Resource does not exist.
             onResourceNotFound();
-        } else nextRoundOfRequests();
+        }
     }
 
     /**

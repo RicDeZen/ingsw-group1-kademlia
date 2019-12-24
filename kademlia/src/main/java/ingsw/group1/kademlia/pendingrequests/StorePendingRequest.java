@@ -25,17 +25,15 @@ public class StorePendingRequest implements PendingRequest {
 
     private static KadActionsBuilder actionBuilder = new KadActionsBuilder();
 
-    private static final String SEPARATOR = "\r";
-    private static final int DEF_PARTS = 1;
     private static final int K = 5;
     private static final int N = 128;
 
+    private RequestState requestState = RequestState.IDLE;
     private int totalStepsTaken = 0;
-    //TODO
-    private RequestState requestState = null;
     private int operationId;
-    private StringResource resourceToStore;
     private BinarySet targetId;
+    private StringResource resourceToStore;
+
     private ActionPropagator actionPropagator;
     private NodeDataProvider<BinarySet, PeerNode> nodeProvider;
     private StoreResultListener resultListener;
@@ -99,7 +97,7 @@ public class StorePendingRequest implements PendingRequest {
      */
     @Override
     public RequestState getRequestState(){
-        return RequestState.PENDING_RESPONSES;
+        return requestState;
     }
 
     /**
@@ -111,10 +109,12 @@ public class StorePendingRequest implements PendingRequest {
     public void start() {
         List<PeerNode> closestNodes = nodeProvider.getKClosest(K, targetId);
         propagateSearch(closestNodes);
+        requestState = RequestState.PENDING_RESPONSES;
     }
 
     /**
      * @return true if the given action can be used to continue the operation, false otherwise.
+     * The action is always ignored if the current state is not {@link RequestState#PENDING_RESPONSES}.
      * The action is "pertinent" if:
      * - The {@code ActionType} of {@code action} is
      * {@link KadAction.ActionType#STORE_ANSWER}.
@@ -123,6 +123,9 @@ public class StorePendingRequest implements PendingRequest {
      */
     @Override
     public boolean isActionPertinent(@NonNull KadAction action) {
+        if(getRequestState() != RequestState.PENDING_RESPONSES) return false;
+        //if()
+        //TODO
         return KadAction.ActionType.STORE_ANSWER == action.getActionType() &&
                 getOperationId() == action.getOperationId();
     }
@@ -133,8 +136,11 @@ public class StorePendingRequest implements PendingRequest {
     @Override
     public void nextStep(@NonNull KadAction action) {
         if (!isActionPertinent(action)) return;
-        switch (requestState){
-            //TODO
+        switch (action.getPayloadType()){
+            case NODE_ID:
+                break;
+            case BOOLEAN:
+                break;
         }
         totalStepsTaken++;
     }

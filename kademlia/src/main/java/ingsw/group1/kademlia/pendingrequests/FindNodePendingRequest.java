@@ -11,7 +11,6 @@ import java.util.TreeSet;
 
 import ingsw.group1.kademlia.ActionPropagator;
 import ingsw.group1.kademlia.BinarySet;
-import ingsw.group1.kademlia.BitSetUtils;
 import ingsw.group1.kademlia.KadAction;
 import ingsw.group1.kademlia.KadActionsBuilder;
 import ingsw.group1.kademlia.NodeDataProvider;
@@ -35,9 +34,11 @@ public class FindNodePendingRequest implements PendingRequest {
     private static final int K = 5;
     private static final int N = 128;
 
+    private RequestState requestState = RequestState.IDLE;
     private int totalStepsTaken = 0;
     private int operationId;
     private BinarySet targetId;
+
     private ActionPropagator actionPropagator;
     private NodeDataProvider<BinarySet, PeerNode> nodeProvider;
     private FindNodeResultListener resultListener;
@@ -99,8 +100,8 @@ public class FindNodePendingRequest implements PendingRequest {
      * @return the current {@link RequestState} for this {@code PendingRequest}.
      */
     @Override
-    public RequestState getRequestState(){
-        return RequestState.PENDING_RESPONSES;
+    public RequestState getRequestState() {
+        return requestState;
     }
 
     /**
@@ -112,10 +113,12 @@ public class FindNodePendingRequest implements PendingRequest {
     public void start() {
         List<PeerNode> closestNodes = nodeProvider.getKClosest(K, targetId);
         propagateToAll(closestNodes);
+        requestState = RequestState.PENDING_RESPONSES;
     }
 
     /**
      * @return true if the given action can be used to continue the operation, false otherwise.
+     * The action is always ignored if the current state is not {@link RequestState#PENDING_RESPONSES}.
      * The action is "pertinent" if:
      * - The {@code ActionType} of {@code action} is
      * {@link ingsw.group1.kademlia.KadAction.ActionType#FIND_NODE_ANSWER}.
@@ -124,6 +127,7 @@ public class FindNodePendingRequest implements PendingRequest {
      */
     @Override
     public boolean isActionPertinent(@NonNull KadAction action) {
+        if (getRequestState() != RequestState.PENDING_RESPONSES) return false;
         return KadAction.ActionType.FIND_NODE_ANSWER == action.getActionType() &&
                 getOperationId() == action.getOperationId();
     }
@@ -164,34 +168,41 @@ public class FindNodePendingRequest implements PendingRequest {
             pendingResponses.remove(sender);
             expectedResponses += action.getTotalParts();
         }
-        //Following condition should always be true. The check is just a fail-safe.
-        if (action.getPayloadType() != KadAction.PayloadType.PEER_ADDRESS) return;
-        PeerNode responseNode = NodeUtils.getNodeForPeer(new SMSPeer(action.getPayload()), N);
-        if(!visitedNodes.containsValue(responseNode))
-            peerBuffer.add(responseNode);
+        if (action.getPayloadType() == KadAction.PayloadType.PEER_ADDRESS) {
+            PeerNode responseNode = NodeUtils.getNodeForPeer(new SMSPeer(action.getPayload()), N);
+            if (!visitedNodes.containsValue(responseNode))
+                peerBuffer.add(responseNode);
+        }
         expectedResponses--;
     }
 
     /**
-     * Method determining which state the {@code PendingRequest} is in. The states are defined as
+     * Method determining which "phase" the {@code PendingRequest} is in. The states are defined as
      * follows:
-     * - WAITING: not all expected Responses came from all Nodes that were expected to answer.
-     * - ROUND_FINISHED: all expected Responses came, but some Nodes closer to our target are in
-     * {@link FindNodePendingRequest#peerBuffer}, so another round of Request propagation is due.
-     * - CLOSEST_FOUND: same as round finished but no closer Nodes are available. Which means the
+     * 1. Not all expected Responses came from all Nodes that were expected to answer.
+     * 2. All expected Responses came, but some Nodes closer to our target are in
+     * {@link FindNodePendingRequest#peerBuffer}, so another round of Requests propagation is due.
+     * 3. Same as phase 2 but no closer Nodes are available. Which means the
      * closest reachable Node has already been encountered and is in
      * {@link FindNodePendingRequest#visitedNodes}.
      */
     private void checkStatus() {
-        if (!(pendingResponses.isEmpty() && expectedResponses == 0)) return;
-        if (peerBuffer.isEmpty()) {
-            finalStep();
-        } else nextRoundOfRequests();
+        if (!(pendingResponses.isEmpty() && expectedResponses == 0)){
+            //Phase 1, other Responses are awaited.
+            return;
+        }
+        if (!peerBuffer.isEmpty()) {
+            //Phase 2, another Request round is due.
+            nextRoundOfRequests();
+        }
+        else {
+            //Phase 3, can't go further. I already found the closest Node I could find.
+            complete();
+        }
     }
 
     /**
-     * Method to perform the next round of Requests, should only be called while in
-     * ROUND_FINISHED state.
+     * Method to perform the next round of Requests, should only be called while in phase 2.
      */
     private void nextRoundOfRequests() {
         //Converting Set to List to be used as parameter.
@@ -204,17 +215,18 @@ public class FindNodePendingRequest implements PendingRequest {
     }
 
     /**
-     * This method should only be called while in CLOSEST_FOUND state, it completes the Request.
+     * This method should only be called while in phase 3, it completes the Request.
      * If no Nodes were added to {@link FindNodePendingRequest#visitedNodes} it probably means I
      * am the closest Node I know to the target id.
      */
-    private void finalStep() {
+    private void complete() {
         PeerNode closestNode = visitedNodes.get(visitedNodes.firstKey());
         if (closestNode != null) {
             resultListener.onFindNodeResult(operationId, targetId.getKey(), closestNode);
         } else {
             resultListener.onFindNodeResult(operationId, targetId.getKey(), null);
         }
+        requestState = RequestState.COMPLETED;
     }
 
     /**

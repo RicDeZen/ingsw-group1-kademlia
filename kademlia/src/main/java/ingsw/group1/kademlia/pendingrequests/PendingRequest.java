@@ -21,6 +21,8 @@ public interface PendingRequest {
      * Enum defining the current operative state of a {@code PendingRequest}.
      */
     enum RequestState {
+        //The {@code PendingRequest} is in an idle state.
+        IDLE,
         //The {@code PendingRequest} is waiting for the result of another Request.
         PENDING_SUBREQUEST,
         //The {@code PendingRequest} is waiting for Responses directed to itself.

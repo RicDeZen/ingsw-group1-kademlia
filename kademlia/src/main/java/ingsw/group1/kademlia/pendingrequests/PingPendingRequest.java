@@ -24,12 +24,14 @@ public class PingPendingRequest implements PendingRequest {
 
     private static KadActionsBuilder actionBuilder = new KadActionsBuilder();
 
+    private RequestState requestState = RequestState.IDLE;
     private int totalStepsTaken = 0;
     private int operationId;
+    private KadAction pingAction;
+
     private ActionPropagator actionPropagator;
     private NodeDataProvider<BinarySet, PeerNode> nodeProvider;
     private PingResultListener resultListener;
-    private KadAction pingAction;
 
     /**
      * Default constructor.
@@ -78,7 +80,7 @@ public class PingPendingRequest implements PendingRequest {
      */
     @Override
     public RequestState getRequestState(){
-        return RequestState.PENDING_RESPONSES;
+        return requestState;
     }
 
     /**
@@ -89,10 +91,12 @@ public class PingPendingRequest implements PendingRequest {
     @Override
     public void start() {
         actionPropagator.propagateAction(pingAction);
+        requestState = RequestState.PENDING_RESPONSES;
     }
 
     /**
      * @return true if the given action can be used to continue the operation, false otherwise.
+     * The action is always ignored if the current state is not {@link RequestState#PENDING_RESPONSES}.
      * The action is "pertinent" if:
      * - The {@code ActionType} of {@code action} is
      * {@link KadAction.ActionType#PING_ANSWER}.
@@ -102,6 +106,7 @@ public class PingPendingRequest implements PendingRequest {
      */
     @Override
     public boolean isActionPertinent(@NonNull KadAction action) {
+        if(getRequestState() != RequestState.PENDING_RESPONSES) return false;
         return KadAction.ActionType.PING_ANSWER == action.getActionType() &&
                 pingAction.getOperationId() == action.getOperationId() &&
                 pingAction.getPeer().equals(action.getPeer());
@@ -119,6 +124,7 @@ public class PingPendingRequest implements PendingRequest {
                 NodeUtils.DEFAULT_KEY_LENGTH);
         nodeProvider.visitNode(pingedNode);
         resultListener.onPingResult(getOperationId(), pingedNode, true);
+        requestState = RequestState.COMPLETED;
         totalStepsTaken++;
     }
 
