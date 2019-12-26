@@ -8,7 +8,7 @@ import java.util.List;
  * Size of RoutingTable is fixed and equals to nodeOwner's key length
  * @author Giorgia Bortoletti
  */
-public class NodesRoutingTable extends RoutingTable<KBucket> {
+public class RoutingTableNodes extends RoutingTable<KBucket> {
 
     private List<KBucket> bucketsTable;
     private int sizeTable;
@@ -18,8 +18,8 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
      * Constructor where the routing table length is equal to nodeOwner length
      * @param nodeOwner
      */
-    public NodesRoutingTable(Node<BinarySet>  nodeOwner){
-        new NodesRoutingTable(nodeOwner, nodeOwner.keyLength());
+    public RoutingTableNodes(Node<BinarySet>  nodeOwner){
+        new RoutingTableNodes(nodeOwner, nodeOwner.keyLength());
     }
 
     /**
@@ -27,7 +27,7 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
      * @param nodeOwner
      * @param sizeTable dimension of routing table
      */
-    public NodesRoutingTable(Node<BinarySet> nodeOwner, int sizeTable){
+    public RoutingTableNodes(Node<BinarySet> nodeOwner, int sizeTable){
         this.nodeOwner = nodeOwner;
         this.sizeTable = sizeTable;
         bucketsTable = new ArrayList<>(sizeTable);

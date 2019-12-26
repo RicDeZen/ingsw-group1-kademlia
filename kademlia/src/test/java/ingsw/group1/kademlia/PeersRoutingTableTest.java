@@ -12,14 +12,14 @@ import static org.junit.Assert.assertTrue;
 public class PeersRoutingTableTest {
 
     public static final int NUMBER_BITS = 3;
-    private NodesRoutingTable rt;
+    private RoutingTableNodes rt;
     private Node nodeOwner;
 
     @Before
     public void createRoutingTable(){
         BitSet bitSet = BitSet.valueOf(new byte[]{(new Integer(7)).byteValue()});
         nodeOwner = new PeerNode(new BinarySet(bitSet)); //KEY = 111
-        rt = new NodesRoutingTable(nodeOwner, NUMBER_BITS);
+        rt = new RoutingTableNodes(nodeOwner, NUMBER_BITS);
     }
 
     @Test

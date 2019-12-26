@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 public class NodesRoutingTableTest {
 
     public static final int NUMBER_BITS = 3;
-    private NodesRoutingTable rt;
+    private RoutingTableNodes rt;
     private Node<BinarySet>  nodeOwner, node;
     private BitSet bitSet;
     private BinarySet distance;
@@ -33,7 +33,7 @@ public class NodesRoutingTableTest {
         node = mock(Node.class);
         when(node.keyLength()).thenReturn(NUMBER_BITS);
 
-        rt = new NodesRoutingTable(nodeOwner, NUMBER_BITS);
+        rt = new RoutingTableNodes(nodeOwner, NUMBER_BITS);
     }
 
     /**
