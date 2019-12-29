@@ -10,7 +10,7 @@ import ingsw.group1.msglibrary.SMSPeer;
  * Class that represents the Peer DistributedNetworkNode of DistributedNetwork
  * Address is a Bitset of fixed length
  */
-public class PeerNode extends Peer<BinarySet> implements Node<BinarySet> {
+public class PeerNode implements Peer<BinarySet, PeerNode>, Node<BinarySet> {
     private BinarySet binaryKey;
     private SMSPeer physicalPeer;
 
@@ -91,4 +91,12 @@ public class PeerNode extends Peer<BinarySet> implements Node<BinarySet> {
         return binaryKey != null && binaryKey.keyLength() > 0;
     }
 
+    /**
+     * @param peerNode The other Node to compare.
+     * @return the result of compareTo for physical Peers.
+     */
+    @Override
+    public int compareTo(PeerNode peerNode) {
+        return this.getPhysicalPeer().compareTo(peerNode.getPhysicalPeer());
+    }
 }

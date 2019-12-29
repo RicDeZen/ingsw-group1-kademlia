@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import java.util.BitSet;
 
-import ingsw.group1.msglibrary.Peer;
 import ingsw.group1.msglibrary.SMSPeer;
 import ingsw.group1.repnetwork.Resource;
 import ingsw.group1.repnetwork.StringResource;
@@ -15,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class NodeUtilsTest {
     BitSet peerKey;
     BitSet resourceKey;
-    Peer<String> peer;
+    SMSPeer peer;
     Resource<String, String> resource;
     PeerNode node;
     int numBit = 128;

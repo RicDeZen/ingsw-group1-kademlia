@@ -25,7 +25,7 @@ public class NodeUtils {
      * @return the binary key generated with SHA-1 hashing for the given peer
      * @throws IllegalArgumentException if key length or given peer are invalid or null
      */
-    public static BitSet getIdForPeer(Peer<String> peer, int keyLength) {
+    public static <P extends Peer<String, P>> BitSet getIdForPeer(P peer, int keyLength) {
         if (keyLength > 0 && keyLength <= 160) {
             if (peer != null && peer.isValid()) {
                 return BitSetUtils.hash(peer.getAddress().getBytes(), keyLength);
@@ -57,7 +57,7 @@ public class NodeUtils {
      * @return an instance of PeerNode with binary key generated with SHA-1 hashing from the given peer
      * @throws IllegalArgumentException if key length or given peer are invalid or null
      */
-    public static PeerNode getNodeForPeer(Peer<String> peer, int keyLength) {
+    public static <P extends Peer<String, P>> PeerNode getNodeForPeer(P peer, int keyLength) {
         if (keyLength > 0 && keyLength <= 160) {
             if (peer != null && peer.isValid()) {
                 BinarySet set = new BinarySet(BitSetUtils.hash(peer.getAddress().getBytes(), keyLength));
