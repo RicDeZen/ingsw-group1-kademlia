@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.BitSet;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -12,14 +13,14 @@ import static org.junit.Assert.assertTrue;
 public class PeersRoutingTableTest {
 
     public static final int NUMBER_BITS = 3;
-    private RoutingTableNodes rt;
+    private NodesRoutingTable rt;
     private Node nodeOwner;
 
     @Before
-    public void createRoutingTable(){
+    public void createRoutingTable() {
         BitSet bitSet = BitSet.valueOf(new byte[]{(new Integer(7)).byteValue()});
         nodeOwner = new PeerNode(new BinarySet(bitSet)); //KEY = 111
-        rt = new RoutingTableNodes(nodeOwner, NUMBER_BITS);
+        rt = new NodesRoutingTable(nodeOwner, NUMBER_BITS);
     }
 
     @Test
@@ -76,9 +77,9 @@ public class PeersRoutingTableTest {
 
     @Test
     public void getLocation() {
-        BitSet bitSet = BitSet.valueOf(new byte[]{(new Integer((int)Math.pow(2,NUMBER_BITS)-2)).byteValue()});
+        BitSet bitSet = BitSet.valueOf(new byte[]{(new Integer((int) Math.pow(2, NUMBER_BITS) - 2)).byteValue()});
         Node newNode = new PeerNode(new BinarySet(bitSet)); //KEY = 110
-        assertEquals(NUMBER_BITS-1, rt.getLocation(newNode));
+        assertEquals(NUMBER_BITS - 1, rt.getLocation(newNode));
     }
 
     @Test
@@ -117,9 +118,7 @@ public class PeersRoutingTableTest {
         bitSet = BitSet.valueOf(new byte[]{(new Integer(3)).byteValue()});
         Node nodeTest = new PeerNode(new BinarySet(bitSet)); //KEY = 011
 
-        assertEquals(nodes, rt.getKClosest(nodeTest));
-
-
+        assertArrayEquals(nodes, rt.getKClosest(nodeTest));
     }
 
 }

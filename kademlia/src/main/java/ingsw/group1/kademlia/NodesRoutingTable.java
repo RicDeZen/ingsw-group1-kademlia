@@ -6,9 +6,10 @@ import java.util.List;
 /**
  * Extends Routing Table with KBucket that contains Node
  * Size of RoutingTable is fixed and equals to nodeOwner's key length
+ *
  * @author Giorgia Bortoletti
  */
-public class RoutingTableNodes extends RoutingTable<KBucket> {
+public class NodesRoutingTable extends RoutingTable<KBucket> {
 
     private List<KBucket> bucketsTable;
     private int sizeTable;
@@ -16,29 +17,33 @@ public class RoutingTableNodes extends RoutingTable<KBucket> {
 
     /**
      * Constructor where the routing table length is equal to nodeOwner length
+     *
      * @param nodeOwner
      */
-    public RoutingTableNodes(Node<BinarySet>  nodeOwner){
-        new RoutingTableNodes(nodeOwner, nodeOwner.keyLength());
+    public NodesRoutingTable(Node<BinarySet> nodeOwner) {
+        new NodesRoutingTable(nodeOwner, nodeOwner.keyLength());
     }
 
     /**
      * Constructor where the routing table length is sizeTable
+     *
      * @param nodeOwner
      * @param sizeTable dimension of routing table
      */
-    public RoutingTableNodes(Node<BinarySet> nodeOwner, int sizeTable){
+    public NodesRoutingTable(Node<BinarySet> nodeOwner, int sizeTable) {
         this.nodeOwner = nodeOwner;
         this.sizeTable = sizeTable;
         bucketsTable = new ArrayList<>(sizeTable);
-        for(int i=0; i<sizeTable; i++)
+        for (int i = 0; i < sizeTable; i++)
             bucketsTable.add(new KBucket(sizeTable));
     }
 
     /**
      * @return nodeOwner of this routing table
      */
-    public Node getNodeOwner(){ return nodeOwner; }
+    public Node getNodeOwner() {
+        return nodeOwner;
+    }
 
     /**
      * @param node Node to add
@@ -46,7 +51,7 @@ public class RoutingTableNodes extends RoutingTable<KBucket> {
      */
     @Override
     public boolean add(Node<BinarySet> node) {
-        if(node == null)
+        if (node == null)
             return false;
         return bucketsTable.get(getLocation(node)).add(node);
     }
@@ -57,11 +62,11 @@ public class RoutingTableNodes extends RoutingTable<KBucket> {
      */
     @Override
     public boolean remove(Node<BinarySet> node) {
-        if(node == null)
+        if (node == null)
             return false;
         int positionNode = getLocation(node);
         KBucket bucketFound = bucketsTable.get(positionNode);
-        if(!bucketFound.contains(node))
+        if (!bucketFound.contains(node))
             return false;
         return bucketFound.remove(node);
     }
@@ -72,10 +77,10 @@ public class RoutingTableNodes extends RoutingTable<KBucket> {
      */
     @Override
     public boolean contains(Node<BinarySet> node) {
-        if(node == null || bucketsTable.isEmpty())
+        if (node == null || bucketsTable.isEmpty())
             return false;
         int positionNode = getLocation(node);
-        if(positionNode == -1)
+        if (positionNode == -1)
             return false;
         return bucketsTable.get(positionNode).contains(node);
     }
@@ -88,7 +93,7 @@ public class RoutingTableNodes extends RoutingTable<KBucket> {
     public KBucket getBucket(int i) {
         try {
             return bucketsTable.get(i);
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             return null;
         }
     }
@@ -99,7 +104,7 @@ public class RoutingTableNodes extends RoutingTable<KBucket> {
      */
     @Override
     public int getLocation(Node<BinarySet> node) {
-        if(node == null)
+        if (node == null)
             return -1;
         BinarySet distance = nodeOwner.getDistance(node);
         return (sizeTable - 1 - distance.getFirstPositionOfOne());
@@ -112,11 +117,11 @@ public class RoutingTableNodes extends RoutingTable<KBucket> {
     @Override
     public Node getClosest(Node<BinarySet> node) {
         Node[] nodesClosest = getKClosest(node);
-        if (nodesClosest != null){
-            int minDistance = sizeTable+1;
+        if (nodesClosest != null) {
+            int minDistance = sizeTable + 1;
             Node nodeClosest = null;
             for (Node nodeMaybeClosest : nodesClosest) {
-                if(!nodeMaybeClosest.equals(node)) {
+                if (!nodeMaybeClosest.equals(node)) {
                     BinarySet distanceBinarySet = node.getDistance(nodeMaybeClosest);
                     int distance = sizeTable - 1 - distanceBinarySet.getFirstPositionOfOne();
                     if (distance < minDistance) {
@@ -137,10 +142,10 @@ public class RoutingTableNodes extends RoutingTable<KBucket> {
     @Override
     public Node[] getKClosest(Node<BinarySet> node) {
         int position;
-        if(!node.equals(nodeOwner))
+        if (!node.equals(nodeOwner))
             position = getLocation(node); //the higher the position, the closer it is
         else
-            position = sizeTable-1;
+            position = sizeTable - 1;
         for (int i = position; i >= 0; i--) { //moves away but it looks for a bucket with some nodes
             Node[] nodesClosest = bucketsTable.get(i).getElements();
             if (nodesClosest.length >= 1)
@@ -148,13 +153,14 @@ public class RoutingTableNodes extends RoutingTable<KBucket> {
         }
         return null;
     }
-  
+
     /**
      * @return number of nodes present in the routing table
      */
-    public int size(){
+    @Override
+    public int size() {
         int size = 0;
-        for(KBucket bucket : bucketsTable){
+        for (KBucket bucket : bucketsTable) {
             size += bucket.size();
         }
         return size;
