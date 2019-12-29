@@ -12,12 +12,12 @@ import ingsw.group1.repnetwork.StringResource;
 import static org.junit.Assert.assertEquals;
 
 public class NodeUtilsTest {
-    BitSet peerKey;
-    BitSet resourceKey;
-    SMSPeer peer;
-    Resource<String, String> resource;
-    PeerNode node;
-    int numBit = 128;
+    private BitSet peerKey;
+    private BitSet resourceKey;
+    private SMSPeer peer;
+    private Resource<String, String> resource;
+    private PeerNode node;
+    private int numBit = 128;
 
     @Before
     public void init(){
