@@ -12,4 +12,8 @@ public interface Node<T> extends Cloneable{
     T getKey();
 
     T getDistance(Node<T> node);
+
+    Object clone();
+
+    boolean isValid();
 }

@@ -29,30 +29,31 @@ package ingsw.group1.kademlia;
  *      bitNode[1, N-1] = myself[1, N-1] --> bitDistanceXOR[1, N-1] = 0
  *      the only Node that has distance = 1
  *
- * @param <B> type of Bucket used for this structure
+ * @param <B> type of {@link Bucket} used for this structure
+ * @param <N> type of {@code N} contained in the routing table and in bucket
  *
  * @author Niccolò Turcato
- * @author Giorgia Bortoletti (some fixes)
+ * @author Giorgia Bortoletti
  */
-public abstract class RoutingTable<B extends Bucket<Node<BinarySet>>> {
+public abstract class RoutingTable<N extends Node<BinarySet>, B extends Bucket<N>> {
 
     /**
-     * @param node Node to add
+     * @param node {@code N} to add
      * @return true if the node has been added, false otherwise
      */
-    public abstract boolean add(Node<BinarySet> node);
+    public abstract boolean add(N node);
 
     /**
-     * @param node Node to remove
+     * @param node {@code N} to remove
      * @return true if the node has been removed, false otherwise
      */
-    public abstract boolean remove(Node<BinarySet> node);
+    public abstract boolean remove(N node);
 
     /**
-     * @param node Node of which check presence
+     * @param node {@code N} of which check presence
      * @return true if present, false otherwise
      */
-    public abstract boolean contains(Node<BinarySet> node);
+    public abstract boolean contains(N node);
 
     /**
      * @param i index of the bucket in buckets container
@@ -61,22 +62,22 @@ public abstract class RoutingTable<B extends Bucket<Node<BinarySet>>> {
     public abstract B getBucket(int i);
 
     /**
-     * @param node Node of the distributed Network
-     * @return the index (between 0 and N -1) of the bucket that maybe containing the given Node (Resource or Peer), -1 otherwise
+     * @param node {@code N} of the distributed Network
+     * @return the index (between 0 and N -1) of the bucket that maybe containing the given {@code N}, -1 otherwise
      */
-    public abstract int getLocation(Node<BinarySet> node);
+    public abstract int getLocation(N node);
 
     /**
-     * @param node
-     * @return the closest Node at the node in the routing table if it is present, otherwise null
+     * @param node {@code N}
+     * @return the closest Node {@code N} at the node argument if it is present in the routing table, null otherwise
      */
-    public abstract Node getClosest(Node<BinarySet> node);
+    public abstract N getClosest(N node);
 
     /**
-     * @param node
-     * @return the closest K Nodes at the node in the routing table if it is present, otherwise null
+     * @param node {@code N}
+     * @return the closest K Nodes {@code N} at the node in the routing table if it is present, null otherwise
      */
-    public abstract Node[] getKClosest(Node<BinarySet> node);
+    public abstract N[] getKClosest(N node);
 
     /**
      * @return number of nodes present in the routing table

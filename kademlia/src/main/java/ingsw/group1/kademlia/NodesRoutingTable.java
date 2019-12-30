@@ -9,28 +9,28 @@ import java.util.List;
  *
  * @author Giorgia Bortoletti
  */
-public class NodesRoutingTable extends RoutingTable<KBucket> {
+public class NodesRoutingTable extends RoutingTable<Node<BinarySet>, KBucket> {
 
     private List<KBucket> bucketsTable;
     private int sizeTable;
-    private Node<BinarySet> nodeOwner;
+    private PeerNode nodeOwner;
 
     /**
      * Constructor where the routing table length is equal to nodeOwner length
      *
-     * @param nodeOwner
+     * @param nodeOwner {@link PeerNode} node owner of routing table
      */
-    public NodesRoutingTable(Node<BinarySet> nodeOwner) {
+    public NodesRoutingTable(PeerNode nodeOwner) {
         new NodesRoutingTable(nodeOwner, nodeOwner.keyLength());
     }
 
     /**
      * Constructor where the routing table length is sizeTable
      *
-     * @param nodeOwner
+     * @param nodeOwner {@link PeerNode} node owner of routing table
      * @param sizeTable dimension of routing table
      */
-    public NodesRoutingTable(Node<BinarySet> nodeOwner, int sizeTable) {
+    public NodesRoutingTable(PeerNode nodeOwner, int sizeTable) {
         this.nodeOwner = nodeOwner;
         this.sizeTable = sizeTable;
         bucketsTable = new ArrayList<>(sizeTable);
@@ -39,14 +39,14 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
     }
 
     /**
-     * @return nodeOwner of this routing table
+     * @return {@link PeerNode} that is node owner of this routing table
      */
-    public Node getNodeOwner() {
+    public PeerNode getNodeOwner() {
         return nodeOwner;
     }
 
     /**
-     * @param node Node to add
+     * @param node {@link Node<BinarySet>} to add
      * @return true if the node has been added, false otherwise
      */
     @Override
@@ -57,7 +57,7 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
     }
 
     /**
-     * @param node Node to remove
+     * @param node {@link Node<BinarySet>} to remove
      * @return true if the node has been removed, false otherwise
      */
     @Override
@@ -72,7 +72,7 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
     }
 
     /**
-     * @param node Node of which check presence
+     * @param node {@link Node<BinarySet>} of which check presence
      * @return true if present, false otherwise
      */
     @Override
@@ -99,8 +99,8 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
     }
 
     /**
-     * @param node Node of the distributed Network
-     * @return the index (between 0 and N -1) of the bucket that maybe containing the given Node with BinarySet, -1 otherwise
+     * @param node {@link Node<BinarySet>} to return its position
+     * @return the index (between 0 and N -1) of the bucket that maybe containing the given node argument, -1 otherwise
      */
     @Override
     public int getLocation(Node<BinarySet> node) {
@@ -111,8 +111,8 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
     }
 
     /**
-     * @param node
-     * @return the closest Node at the node in the routing table if it is present, null otherwise
+     * @param node {@link Node<BinarySet>} to find its Closest node present in the routing table
+     * @return the closest {@link Node} at the node in the routing table if it is present, null otherwise
      */
     @Override
     public Node getClosest(Node<BinarySet> node) {
@@ -136,8 +136,8 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
     }
 
     /**
-     * @param node
-     * @return the closest K Nodes at the node in the routing table if it is present, null otherwise
+     * @param node {@link Node<BinarySet>} to find its KClosest nodes present in the routing table
+     * @return the closest K {@link Node} at the node in the routing table if it is present, null otherwise
      */
     @Override
     public Node[] getKClosest(Node<BinarySet> node) {

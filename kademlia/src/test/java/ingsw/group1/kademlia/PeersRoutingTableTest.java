@@ -10,11 +10,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Test for NodesRoutingTable using PeerNode
+ *
+ * @author Giorgia Bortoletti
+ */
 public class PeersRoutingTableTest {
 
     public static final int NUMBER_BITS = 3;
     private NodesRoutingTable rt;
-    private Node nodeOwner;
+    private PeerNode nodeOwner;
 
     @Before
     public void createRoutingTable() {
@@ -28,6 +33,7 @@ public class PeersRoutingTableTest {
         BitSet bitSet = BitSet.valueOf(new byte[]{(new Integer(1)).byteValue()});
         Node newNode = new PeerNode(new BinarySet(bitSet)); //KEY = 001
         assertTrue(rt.add(newNode));
+        assertFalse(rt.add(null));
     }
 
     @Test

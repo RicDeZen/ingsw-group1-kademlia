@@ -15,29 +15,37 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test for NodesRoutingTable using generic Node with class Mock
+ *
+ * @author Giorgia Bortoletti
+ */
+
 @RunWith(MockitoJUnitRunner.class)
 public class NodesRoutingTableTest {
 
-    public static final int NUMBER_BITS = 3;
+    public static final int NUMBER_BITS_KEY = 3;
+
     private NodesRoutingTable rt;
-    private Node<BinarySet> nodeOwner, node;
+    private PeerNode nodeOwner;
+    private Node<BinarySet> node;
     private BitSet bitSet;
     private BinarySet distance;
 
     @Before
     public void createRoutingTable() {
         bitSet = BitSet.valueOf(new byte[]{(new Integer(7)).byteValue()});
-        nodeOwner = mock(Node.class);
+        nodeOwner = mock(PeerNode.class);
         when(nodeOwner.getKey()).thenReturn(new BinarySet(bitSet));
         node = mock(Node.class);
-        rt = new NodesRoutingTable(nodeOwner, NUMBER_BITS);
+        rt = new NodesRoutingTable(nodeOwner, NUMBER_BITS_KEY);
     }
 
     /**
      * Calculating distance of node respect of nodeOwner using getDistance of PeerNode
      *
-     * @param nodeOwner
-     * @param node
+     * @param nodeOwner {@link Node<BinarySet>}
+     * @param node {@link Node<BinarySet>}
      * @return BinarySet represents distance between two parameters
      */
     private BinarySet getDistancePeerNode(Node<BinarySet> nodeOwner, Node<BinarySet> node) {
@@ -47,14 +55,13 @@ public class NodesRoutingTableTest {
     /**
      * Calculating distance of node respect of nodeOwner using getDistance of ResourceNode
      *
-     * @param nodeOwner
-     * @param node
+     * @param nodeOwner {@link Node<BinarySet>}
+     * @param node {@link Node<BinarySet>}
      * @return BinarySet represents distance between two parameters
      */
     private BinarySet getDistanceResourceNode(Node<BinarySet> nodeOwner, Node<BinarySet> node) {
         return new ResourceNode(nodeOwner.getKey(), "").getDistance(node);
     }
-
 
     @Test
     public void add() {
@@ -64,6 +71,7 @@ public class NodesRoutingTableTest {
         when(nodeOwner.getDistance(node)).thenReturn(distance);
 
         assertTrue(rt.add(node));
+        assertFalse(rt.add(null));
     }
 
     @Test
@@ -122,7 +130,7 @@ public class NodesRoutingTableTest {
 
     @Test
     public void getBucketInvalidPosition() {
-        assertEquals(null, rt.getBucket(NUMBER_BITS));
+        assertEquals(null, rt.getBucket(NUMBER_BITS_KEY));
     }
 
     @Test
@@ -132,12 +140,12 @@ public class NodesRoutingTableTest {
 
     @Test
     public void getLocation() {
-        bitSet = BitSet.valueOf(new byte[]{(new Integer((int) Math.pow(2, NUMBER_BITS) - 2)).byteValue()}); //110
+        bitSet = BitSet.valueOf(new byte[]{(new Integer((int) Math.pow(2, NUMBER_BITS_KEY) - 2)).byteValue()}); //110
         when(node.getKey()).thenReturn(new BinarySet(bitSet));
         distance = getDistancePeerNode(nodeOwner, node);
         when(nodeOwner.getDistance(node)).thenReturn(distance);
 
-        assertEquals(NUMBER_BITS - 1, rt.getLocation(node));
+        assertEquals(NUMBER_BITS_KEY - 1, rt.getLocation(node));
     }
 
     @Test
