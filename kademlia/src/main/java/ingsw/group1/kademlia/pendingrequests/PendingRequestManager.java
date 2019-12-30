@@ -25,6 +25,7 @@ import ingsw.group1.repnetwork.StringResource;
  * A maximum number of Requests can be set during creation.
  *
  * @author Riccardo De Zen
+ * CODE REVIEW
  */
 public class PendingRequestManager {
 

@@ -11,6 +11,7 @@ import java.util.List;
  * {@link ingsw.group1.kademlia.pendingrequests.PendingRequest}.
  *
  * @author Riccardo De Zen
+ * CODE REVIEW
  */
 public interface ActionPropagator {
     /**

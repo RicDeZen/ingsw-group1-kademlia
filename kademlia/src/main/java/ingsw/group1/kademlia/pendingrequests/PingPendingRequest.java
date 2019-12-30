@@ -19,6 +19,7 @@ import ingsw.group1.msglibrary.SMSPeer;
  * {@link PendingRequest#nextStep(KadAction)}.
  *
  * @author Riccardo De Zen
+ * CODE REVIEW
  */
 public class PingPendingRequest implements PendingRequest {
 

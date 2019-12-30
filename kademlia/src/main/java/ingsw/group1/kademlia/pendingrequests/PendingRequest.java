@@ -17,6 +17,7 @@ import ingsw.group1.kademlia.KadAction;
  * perform further steps.
  *
  * @author Riccardo De Zen
+ * CODE REVIEW
  */
 public interface PendingRequest {
     /**

@@ -12,6 +12,7 @@ import ingsw.group1.kademlia.PeerNode;
  * {@link ingsw.group1.kademlia.pendingrequests.FindNodePendingRequest}.
  *
  * @author Riccardo De Zen
+ * CODE REVIEW
  */
 public interface FindNodeResultListener {
     /**

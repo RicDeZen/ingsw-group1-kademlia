@@ -10,6 +10,7 @@ import ingsw.group1.kademlia.PeerNode;
  * {@link ingsw.group1.kademlia.pendingrequests.PingPendingRequest}.
  *
  * @author Riccardo De Zen
+ * CODE REVIEW
  */
 public interface PingResultListener {
     /**
