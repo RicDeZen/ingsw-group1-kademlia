@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Extends Routing Table with KBucket that contains Node
+ * Extends Routing Table with {@link KBucket} that contains {@link Node<BinarySet>}
  * Size of RoutingTable is fixed and equals to nodeOwner's key length
  *
  * @author Giorgia Bortoletti

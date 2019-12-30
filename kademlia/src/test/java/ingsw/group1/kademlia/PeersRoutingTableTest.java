@@ -17,7 +17,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class PeersRoutingTableTest {
 
-    public static final int NUMBER_BITS = 3;
+    public static final int NUMBER_BITS_KEY = 3;
+
     private NodesRoutingTable rt;
     private PeerNode nodeOwner;
 
@@ -25,7 +26,7 @@ public class PeersRoutingTableTest {
     public void createRoutingTable() {
         BitSet bitSet = BitSet.valueOf(new byte[]{(new Integer(7)).byteValue()});
         nodeOwner = new PeerNode(new BinarySet(bitSet)); //KEY = 111
-        rt = new NodesRoutingTable(nodeOwner, NUMBER_BITS);
+        rt = new NodesRoutingTable(nodeOwner, NUMBER_BITS_KEY);
     }
 
     @Test
@@ -83,9 +84,9 @@ public class PeersRoutingTableTest {
 
     @Test
     public void getLocation() {
-        BitSet bitSet = BitSet.valueOf(new byte[]{(new Integer((int) Math.pow(2, NUMBER_BITS) - 2)).byteValue()});
+        BitSet bitSet = BitSet.valueOf(new byte[]{(new Integer((int) Math.pow(2, NUMBER_BITS_KEY) - 2)).byteValue()});
         Node newNode = new PeerNode(new BinarySet(bitSet)); //KEY = 110
-        assertEquals(NUMBER_BITS - 1, rt.getLocation(newNode));
+        assertEquals(NUMBER_BITS_KEY - 1, rt.getLocation(newNode));
     }
 
     @Test

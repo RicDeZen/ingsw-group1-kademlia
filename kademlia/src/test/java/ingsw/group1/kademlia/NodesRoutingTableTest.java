@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
  *
  * @author Giorgia Bortoletti
  */
-
 @RunWith(MockitoJUnitRunner.class)
 public class NodesRoutingTableTest {
 
