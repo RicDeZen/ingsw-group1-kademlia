@@ -7,7 +7,7 @@ import ingsw.group1.kademlia.KadAction;
 /**
  * Interface defining the standard behaviour of a {@code PendingRequest}. A single {@code
  * PendingRequest} is responsible of keeping track of the state of a Request made by the User.
- * <p>
+ *
  * A {@code PendingRequest} should call an {@link ingsw.group1.kademlia.ActionPropagator} in
  * order to propagate through the Network the Requests it's willing to send.
  * A {@code PendingRequest} should ignore attempts to perform steps with an impertinent Action,
