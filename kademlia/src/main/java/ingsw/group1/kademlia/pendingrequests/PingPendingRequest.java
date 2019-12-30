@@ -79,34 +79,35 @@ public class PingPendingRequest implements PendingRequest {
      * @return the current {@link RequestState} for this {@code PendingRequest}.
      */
     @Override
-    public RequestState getRequestState(){
+    public RequestState getRequestState() {
         return requestState;
     }
 
     /**
      * @see PendingRequest#start()
-     * The only propagated Action is a Request of type
-     * {@link KadAction.ActionType#PING}.
+     * The only propagated Action is a Request of type {@link KadAction.ActionType#PING}.
      */
     @Override
     public void start() {
-        actionPropagator.propagateAction(pingAction);
         requestState = RequestState.PENDING_RESPONSES;
+        actionPropagator.propagateAction(pingAction);
     }
 
     /**
      * @return true if the given action can be used to continue the operation, false otherwise.
-     * The action is always ignored if the current state is not {@link RequestState#PENDING_RESPONSES}.
+     * The action is always ignored if the current state is not
+     * {@link RequestState#PENDING_RESPONSES}.
      * The action is "pertinent" if:
      * - The {@code ActionType} of {@code action} is
      * {@link KadAction.ActionType#PING_ANSWER}.
      * - The {@code operationId} matches.
-     * - The {@code Peer} of {@code action} matches the {@code Peer} of {@code pingAction}.
+     * - The {@code Peer} of {@code action} matches the {@code Peer} of
+     * {@link PingPendingRequest#pingAction}.
      * @see PendingRequest#isActionPertinent(KadAction)
      */
     @Override
     public boolean isActionPertinent(@NonNull KadAction action) {
-        if(getRequestState() != RequestState.PENDING_RESPONSES) return false;
+        if (getRequestState() != RequestState.PENDING_RESPONSES) return false;
         return KadAction.ActionType.PING_ANSWER == action.getActionType() &&
                 pingAction.getOperationId() == action.getOperationId() &&
                 pingAction.getPeer().equals(action.getPeer());
@@ -129,7 +130,7 @@ public class PingPendingRequest implements PendingRequest {
     }
 
     /**
-     * Method to return the correct Action for a given Peer
+     * Method to return the correct Action for a given Peer.
      *
      * @param peer the target Peer for the Action.
      * @return the build {@code KadAction}.

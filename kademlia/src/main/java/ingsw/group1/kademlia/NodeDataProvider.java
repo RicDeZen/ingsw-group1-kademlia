@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * Interface defining standard behaviour for a class able to provide data and perform operations
  * regarding the {@code Node} instances in a Network.
- * An implementation may add "closer than the host Node" as a more strict definition of
- * "closest Node/Nodes", if this is the case, and the host Node is also the closest, the
+ * An implementation may add "closer than the root Node" as a more strict definition of
+ * "closest Node/Nodes", if this is the case and the root Node is also the closest, the
  * implementing class may choose to return {@code null}.
  *
  * @param <K> Type of key for the {@code Node} the implementing Class manages.

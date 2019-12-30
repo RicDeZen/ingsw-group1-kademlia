@@ -5,7 +5,9 @@ import androidx.annotation.NonNull;
 import ingsw.group1.kademlia.KadAction;
 
 /**
- * Interface defining the standard behaviour of PendingRequests.
+ * Interface defining the standard behaviour of a {@code PendingRequest}. A single {@code
+ * PendingRequest} is responsible of keeping track of the state of a Request made by the User.
+ * <p>
  * A {@code PendingRequest} should call an {@link ingsw.group1.kademlia.ActionPropagator} in
  * order to propagate through the Network the Requests it's willing to send.
  * A {@code PendingRequest} should ignore attempts to perform steps with an impertinent Action,
@@ -21,13 +23,22 @@ public interface PendingRequest {
      * Enum defining the current operative state of a {@code PendingRequest}.
      */
     enum RequestState {
-        //The {@code PendingRequest} is in an idle state.
+        /**
+         * The {@code PendingRequest} is in an idle state.
+         */
         IDLE,
-        //The {@code PendingRequest} is waiting for the result of another Request.
+        /**
+         * The {@code PendingRequest} is waiting for the result of another Request.
+         */
         PENDING_SUBREQUEST,
-        //The {@code PendingRequest} is waiting for Responses directed to itself.
+        /**
+         * The {@code PendingRequest} is waiting for Responses directed to itself. This should be
+         * the only state where Actions CAN be pertinent.
+         */
         PENDING_RESPONSES,
-        //The {@code PendingRequest} has finished its execution and returned its result.
+        /**
+         * The {@code PendingRequest} has finished its execution and returned its result.
+         */
         COMPLETED;
     }
 

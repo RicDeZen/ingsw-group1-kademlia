@@ -31,14 +31,22 @@ public class FindNodePendingRequest implements PendingRequest {
 
     private static KadActionsBuilder actionBuilder = new KadActionsBuilder();
 
-    private static final int K = 5;
-    private static final int N = 128;
+    //These constants are soon to be moved to an appropriate class.
+    /**
+     * The number of Nodes contacted on each iteration and the number of Nodes every contacted
+     * Node will send back.
+     */
+    private static final int KAD_K = 10;
+    /**
+     * The length of IDs in the Network and the number of buckets in the Routing Table.
+     */
+    private static final int KAD_N = 128;
 
     private RequestState requestState = RequestState.IDLE;
     private int totalStepsTaken = 0;
+
     private int operationId;
     private BinarySet targetId;
-
     private ActionPropagator actionPropagator;
     private NodeDataProvider<BinarySet, PeerNode> nodeProvider;
     private FindNodeResultListener resultListener;
@@ -52,8 +60,10 @@ public class FindNodePendingRequest implements PendingRequest {
     //Set used to keep track of the Peers we received as Responses from the Peers we contacted.
     private Set<PeerNode> peerBuffer = new TreeSet<>();
 
-    //The number of Responses we expect. It increases every time a new Node Response and it
-    // decreases by one for every received Response.
+    /**
+     * The number of Responses we expect. It increases every time a Node responds for the first
+     * time and it decreases by one for every received Response.
+     */
     private int expectedResponses = 0;
 
     /**
@@ -111,18 +121,20 @@ public class FindNodePendingRequest implements PendingRequest {
      */
     @Override
     public void start() {
-        List<PeerNode> closestNodes = nodeProvider.getKClosest(K, targetId);
-        propagateToAll(closestNodes);
+        List<PeerNode> closestNodes = nodeProvider.getKClosest(KAD_K, targetId);
         requestState = RequestState.PENDING_RESPONSES;
+        propagateToAll(closestNodes);
     }
 
     /**
      * @return true if the given action can be used to continue the operation, false otherwise.
-     * The action is always ignored if the current state is not {@link RequestState#PENDING_RESPONSES}.
+     * The action is always ignored if the current state is not
+     * {@link RequestState#PENDING_RESPONSES}.
      * The action is "pertinent" if:
      * - The {@code ActionType} of {@code action} is
      * {@link ingsw.group1.kademlia.KadAction.ActionType#FIND_NODE_ANSWER}.
      * - The {@code operationId} matches.
+     * - The Payload is either a
      * @see PendingRequest#isActionPertinent(KadAction)
      */
     @Override
@@ -162,14 +174,19 @@ public class FindNodePendingRequest implements PendingRequest {
      * @param action the Response Action. Must be pertinent.
      */
     private void handleResponse(@NonNull KadAction action) {
-        PeerNode sender = NodeUtils.getNodeForPeer(action.getPeer(), N);
+        PeerNode sender = NodeUtils.getNodeForPeer(action.getPeer(), KAD_N);
+        //If it's the first time the sender answers I keep track of how many more responses it'll
+        // send.
         if (pendingResponses.contains(sender)) {
             markVisited(sender);
             pendingResponses.remove(sender);
             expectedResponses += action.getTotalParts();
         }
+        //If a Peer has been sent as Payload, I take it into consideration. Anything else is
+        // ignored.
         if (action.getPayloadType() == KadAction.PayloadType.PEER_ADDRESS) {
-            PeerNode responseNode = NodeUtils.getNodeForPeer(new SMSPeer(action.getPayload()), N);
+            PeerNode responseNode = NodeUtils.getNodeForPeer(new SMSPeer(action.getPayload()),
+                    KAD_N);
             if (!visitedNodes.containsValue(responseNode))
                 peerBuffer.add(responseNode);
         }
@@ -187,15 +204,14 @@ public class FindNodePendingRequest implements PendingRequest {
      * {@link FindNodePendingRequest#visitedNodes}.
      */
     private void checkStatus() {
-        if (!(pendingResponses.isEmpty() && expectedResponses == 0)){
+        if (!(pendingResponses.isEmpty() && expectedResponses == 0)) {
             //Phase 1, other Responses are awaited.
             return;
         }
         if (!peerBuffer.isEmpty()) {
             //Phase 2, another Request round is due.
             nextRoundOfRequests();
-        }
-        else {
+        } else {
             //Phase 3, can't go further. I already found the closest Node I could find.
             complete();
         }
@@ -205,9 +221,9 @@ public class FindNodePendingRequest implements PendingRequest {
      * Method to perform the next round of Requests, should only be called while in phase 2.
      */
     private void nextRoundOfRequests() {
-        //Converting Set to List to be used as parameter.
+        //Converting Set to List to be used as parameter in nodeProvider.filterKClosest(...).
         List<PeerNode> listBuffer = Arrays.asList(peerBuffer.toArray(new PeerNode[0]));
-        List<PeerNode> newClosest = nodeProvider.filterKClosest(K, targetId, listBuffer);
+        List<PeerNode> newClosest = nodeProvider.filterKClosest(KAD_K, targetId, listBuffer);
 
         pendingResponses.addAll(newClosest);
         peerBuffer.clear();
@@ -224,7 +240,8 @@ public class FindNodePendingRequest implements PendingRequest {
         if (closestNode != null) {
             resultListener.onFindNodeResult(operationId, targetId.getKey(), closestNode);
         } else {
-            resultListener.onFindNodeResult(operationId, targetId.getKey(), null);
+            //If closestNode is null, then no Node closer than ourselves was found.
+            resultListener.onFindNodeResult(operationId, targetId.getKey(), nodeProvider.getRootNode());
         }
         requestState = RequestState.COMPLETED;
     }
