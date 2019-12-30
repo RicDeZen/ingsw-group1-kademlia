@@ -72,7 +72,7 @@ public class PingPendingRequest implements PendingRequest {
      */
     @Override
     public int getOperationId() {
-        return pingAction.getOperationId();
+        return operationId;
     }
 
     /**
