@@ -51,7 +51,7 @@ public class NodesRoutingTableTest {
         return new PeerNode(nodeOwner.getKey()).getDistance(node);
     }
 
-    /**
+    /*/**
      * Calculating distance of node respect of nodeOwner using getDistance of ResourceNode
      *
      * @param nodeOwner {@link Node<BinarySet>}
