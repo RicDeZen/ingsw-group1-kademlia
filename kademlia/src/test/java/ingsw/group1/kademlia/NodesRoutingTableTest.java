@@ -58,9 +58,9 @@ public class NodesRoutingTableTest {
      * @param node {@link Node<BinarySet>}
      * @return BinarySet represents distance between two parameters
      */
-    private BinarySet getDistanceResourceNode(Node<BinarySet> nodeOwner, Node<BinarySet> node) {
+    /*private BinarySet getDistanceResourceNode(Node<BinarySet> nodeOwner, Node<BinarySet> node) {
         return new ResourceNode(nodeOwner.getKey(), "").getDistance(node);
-    }
+    }*/
 
     @Test
     public void add() {
