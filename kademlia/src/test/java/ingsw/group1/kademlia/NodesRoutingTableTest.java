@@ -25,7 +25,7 @@ public class NodesRoutingTableTest {
 
     public static final int NUMBER_BITS_KEY = 3;
 
-    private NodesRoutingTable rt;
+    private NodesRoutingTable routingTable;
     private PeerNode nodeOwner;
     private Node<BinarySet> node;
     private BitSet bitSet;
@@ -37,7 +37,7 @@ public class NodesRoutingTableTest {
         nodeOwner = mock(PeerNode.class);
         when(nodeOwner.getKey()).thenReturn(new BinarySet(bitSet));
         node = mock(Node.class);
-        rt = new NodesRoutingTable(nodeOwner, NUMBER_BITS_KEY);
+        routingTable = new NodesRoutingTable(nodeOwner, NUMBER_BITS_KEY);
     }
 
     /**
@@ -69,8 +69,8 @@ public class NodesRoutingTableTest {
         distance = getDistancePeerNode(nodeOwner, node);
         when(nodeOwner.getDistance(node)).thenReturn(distance);
 
-        assertTrue(rt.add(node));
-        assertFalse(rt.add(null));
+        assertTrue(routingTable.add(node));
+        assertFalse(routingTable.add(null));
     }
 
     @Test
@@ -80,8 +80,8 @@ public class NodesRoutingTableTest {
         distance = getDistancePeerNode(nodeOwner, node);
         when(nodeOwner.getDistance(node)).thenReturn(distance);
 
-        assertTrue(rt.add(node));
-        assertTrue(rt.contains(node));
+        assertTrue(routingTable.add(node));
+        assertTrue(routingTable.contains(node));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class NodesRoutingTableTest {
         distance = getDistancePeerNode(nodeOwner, node);
         when(nodeOwner.getDistance(node)).thenReturn(distance);
 
-        assertFalse(rt.contains(node));
+        assertFalse(routingTable.contains(node));
     }
 
     @Test
@@ -101,8 +101,9 @@ public class NodesRoutingTableTest {
         distance = getDistancePeerNode(nodeOwner, node);
         when(nodeOwner.getDistance(node)).thenReturn(distance);
 
-        assertTrue(rt.add(node));
-        assertTrue(rt.remove(node));
+        assertTrue(routingTable.add(node));
+        assertTrue(routingTable.remove(node));
+        assertFalse(routingTable.contains(node));
     }
 
     @Test
@@ -112,7 +113,7 @@ public class NodesRoutingTableTest {
         distance = getDistancePeerNode(nodeOwner, node);
         when(nodeOwner.getDistance(node)).thenReturn(distance);
 
-        assertFalse(rt.remove(node));
+        assertFalse(routingTable.remove(node));
     }
 
     @Test
@@ -122,19 +123,19 @@ public class NodesRoutingTableTest {
         distance = getDistancePeerNode(nodeOwner, node);
         when(nodeOwner.getDistance(node)).thenReturn(distance);
 
-        assertTrue(rt.add(node));
-        KBucket bucket = rt.getBucket(1);
+        assertTrue(routingTable.add(node));
+        KBucket bucket = routingTable.getBucket(1);
         assertEquals(node, bucket.getOldest());
     }
 
     @Test
     public void getBucketInvalidPosition() {
-        assertEquals(null, rt.getBucket(NUMBER_BITS_KEY));
+        assertEquals(null, routingTable.getBucket(NUMBER_BITS_KEY));
     }
 
     @Test
     public void getNodeOwner() {
-        assertEquals(nodeOwner, rt.getNodeOwner());
+        assertEquals(nodeOwner, routingTable.getNodeOwner());
     }
 
     @Test
@@ -144,7 +145,7 @@ public class NodesRoutingTableTest {
         distance = getDistancePeerNode(nodeOwner, node);
         when(nodeOwner.getDistance(node)).thenReturn(distance);
 
-        assertEquals(NUMBER_BITS_KEY - 1, rt.getLocation(node));
+        assertEquals(NUMBER_BITS_KEY - 1, routingTable.getLocation(node));
     }
 
     @Test
@@ -156,26 +157,26 @@ public class NodesRoutingTableTest {
         when(node.getKey()).thenReturn(new BinarySet(bitSet));
         distance = getDistancePeerNode(nodeOwner, node);
         when(nodeOwner.getDistance(node)).thenReturn(distance);
-        assertTrue(rt.add(node));
+        assertTrue(routingTable.add(node));
 
         bitSet = BitSet.valueOf(new byte[]{(new Integer(1)).byteValue()}); //KEY = 001
         when(referenceNode.getKey()).thenReturn(new BinarySet(bitSet));
         distance = getDistancePeerNode(nodeOwner, referenceNode);
         when(nodeOwner.getDistance(referenceNode)).thenReturn(distance);
-        assertTrue(rt.add(referenceNode));
+        assertTrue(routingTable.add(referenceNode));
 
         bitSet = BitSet.valueOf(new byte[]{(new Integer(2)).byteValue()}); //KEY = 010
         when(closestNode.getKey()).thenReturn(new BinarySet(bitSet));
         distance = getDistancePeerNode(nodeOwner, closestNode);
         when(nodeOwner.getDistance(closestNode)).thenReturn(distance);
-        assertTrue(rt.add(closestNode));
+        assertTrue(routingTable.add(closestNode));
 
         distance = getDistancePeerNode(referenceNode, closestNode);
         when(referenceNode.getDistance(closestNode)).thenReturn(distance);
         distance = getDistancePeerNode(referenceNode, node);
         distance = getDistancePeerNode(referenceNode, referenceNode);
 
-        assertEquals(closestNode, rt.getClosest(referenceNode));
+        assertEquals(closestNode, routingTable.getClosest(referenceNode));
     }
 
     @Test
@@ -199,7 +200,7 @@ public class NodesRoutingTableTest {
 
             distance = getDistancePeerNode(node, nodeAdded); //from the node to getKClosest
 
-            assertTrue(rt.add(nodeAdded));
+            assertTrue(routingTable.add(nodeAdded));
 
             key++;
         }
@@ -218,14 +219,14 @@ public class NodesRoutingTableTest {
 
             key++;
 
-            assertTrue(rt.add(nodeAdded));
+            assertTrue(routingTable.add(nodeAdded));
         }
 
-        assertArrayEquals(nodesClosest.toArray(), rt.getKClosest(node));
+        assertArrayEquals(nodesClosest.toArray(), routingTable.getKClosest(node));
     }
 
     @Test
-    public void getKClosest_NodeOwner() {
+    public void getKClosestToNodeOwner() {
         int numberNodesClosest = 3;
         ArrayList<Node<BinarySet>> othersNodes = new ArrayList<>();
         int key = 1;
@@ -238,7 +239,7 @@ public class NodesRoutingTableTest {
             distance = getDistancePeerNode(nodeOwner, nodeAdded); //from nodeOwner
             when(nodeOwner.getDistance(nodeAdded)).thenReturn(distance);
 
-            assertTrue(rt.add(nodeAdded));
+            assertTrue(routingTable.add(nodeAdded));
 
             key++;
         }
@@ -256,10 +257,10 @@ public class NodesRoutingTableTest {
 
             key++;
 
-            assertTrue(rt.add(nodeAdded));
+            assertTrue(routingTable.add(nodeAdded));
         }
 
-        assertArrayEquals(nodesClosest.toArray(), rt.getKClosest(nodeOwner));
+        assertArrayEquals(nodesClosest.toArray(), routingTable.getKClosest(nodeOwner));
     }
 
 }

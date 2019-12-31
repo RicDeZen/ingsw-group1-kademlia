@@ -58,11 +58,11 @@ public class NodesRoutingTable extends RoutingTable<Node<BinarySet>, KBucket> {
 
     /**
      * @param node {@link Node<BinarySet>} to remove
-     * @return true if the node has been removed, false otherwise
+     * @return true if the node is present in the table and it has been removed and, false otherwise
      */
     @Override
     public boolean remove(Node<BinarySet> node) {
-        if (node == null)
+        if (!(contains(node)))
             return false;
         int positionNode = getLocation(node);
         KBucket bucketFound = bucketsTable.get(positionNode);
@@ -86,19 +86,19 @@ public class NodesRoutingTable extends RoutingTable<Node<BinarySet>, KBucket> {
     }
 
     /**
-     * @param i index of the bucket in buckets container
+     * @param position index of the bucket in buckets container
      * @return the bucket at index i, null otherwise
      */
     @Override
-    public KBucket getBucket(int i) {
-        try {
-            return bucketsTable.get(i);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
+    public KBucket getBucket(int position) {
+        if(position>=0 && position<bucketsTable.size())
+            return bucketsTable.get(position);
+        return null;
     }
 
     /**
+     * This method returns the index of the bucket that perhaps contains the given node argument
+     *
      * @param node {@link Node<BinarySet>} to return its position
      * @return the index (between 0 and N -1) of the bucket that maybe containing the given node argument, -1 otherwise
      */
@@ -111,8 +111,11 @@ public class NodesRoutingTable extends RoutingTable<Node<BinarySet>, KBucket> {
     }
 
     /**
+     * This method returns the closest node to the argument node
+     * if closest node is present in the routing table, null otherwise
+     *
      * @param node {@link Node<BinarySet>} to find its Closest node present in the routing table
-     * @return the closest {@link Node} at the node in the routing table if it is present, null otherwise
+     * @return the closest {@link Node} to the argument node if it is present in the routing table, null otherwise
      */
     @Override
     public Node getClosest(Node<BinarySet> node) {
@@ -136,8 +139,12 @@ public class NodesRoutingTable extends RoutingTable<Node<BinarySet>, KBucket> {
     }
 
     /**
+     * This method returns the closest nodes to the argument node
+     * if these nodes are presents in the routing table, null otherwise.
+     * They are a number equals to the size of the nearest existing bucket.
+     *
      * @param node {@link Node<BinarySet>} to find its KClosest nodes present in the routing table
-     * @return the closest K {@link Node} at the node in the routing table if it is present, null otherwise
+     * @return the closest K {@link Node} to the argument node if they are presents in the routing table, null otherwise
      */
     @Override
     public Node[] getKClosest(Node<BinarySet> node) {
