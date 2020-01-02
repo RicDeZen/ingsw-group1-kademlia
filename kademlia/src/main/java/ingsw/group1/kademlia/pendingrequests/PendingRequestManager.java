@@ -50,13 +50,14 @@ public class PendingRequestManager {
      *                                by enqueued {@code PendingRequests}.
      * @param defaultNodeDataProvider The {@link NodeDataProvider} that will be used by default
      *                                by enqueued {@code PendingRequests}.
+     * @throws IllegalArgumentException If the given capacity is higher than {@link #MAX_SIZE}.
      */
     public PendingRequestManager(
             int capacity,
             @NonNull ActionPropagator defaultActionPropagator,
             @NonNull NodeDataProvider<BinarySet, PeerNode> defaultNodeDataProvider
     ) {
-        if(capacity > MAX_SIZE)
+        if (capacity > MAX_SIZE)
             throw new IllegalArgumentException(SIZE_ERR);
         this.capacity = capacity;
         this.defaultActionPropagator = defaultActionPropagator;
@@ -84,11 +85,13 @@ public class PendingRequestManager {
     /**
      * Method to enqueue a {@link PingPendingRequest}.
      *
+     * @param peerToPing the {@code Peer} to ping.
+     * @param listener   a valid listener to the result of the enqueued Request.
      * @return true if the {@code PendingRequest} could be enqueued, false otherwise.
      */
     public boolean enqueuePing(@NonNull SMSPeer peerToPing, @NonNull PingResultListener listener) {
         int id = generateId();
-        if(id == SENTINEL_ID)
+        if (id == SENTINEL_ID)
             return false;
         PendingRequest request = new PingPendingRequest(
                 id,
@@ -105,12 +108,14 @@ public class PendingRequestManager {
     /**
      * Method to enqueue a {@link InvitePendingRequest}.
      *
+     * @param peerToInvite The {@code Peer} to be invited.
+     * @param listener     a valid listener to the result of the enqueued Request.
      * @return true if the {@code PendingRequest} could be enqueued, false otherwise.
      */
     public boolean enqueueInvite(@NonNull SMSPeer peerToInvite,
                                  @NonNull InviteResultListener listener) {
         int id = generateId();
-        if(id == SENTINEL_ID)
+        if (id == SENTINEL_ID)
             return false;
         PendingRequest request = new InvitePendingRequest(
                 id,
@@ -127,12 +132,14 @@ public class PendingRequestManager {
     /**
      * Method to enqueue a {@link FindNodePendingRequest}.
      *
+     * @param targetId The Node id we are looking for.
+     * @param listener a valid listener to the result of the enqueued Request.
      * @return true if the {@code PendingRequest} could be enqueued, false otherwise.
      */
     public boolean enqueueFindNode(@NonNull BinarySet targetId,
                                    @NonNull FindNodeResultListener listener) {
         int id = generateId();
-        if(id == SENTINEL_ID)
+        if (id == SENTINEL_ID)
             return false;
         PendingRequest request = new FindNodePendingRequest(
                 id,
@@ -149,12 +156,14 @@ public class PendingRequestManager {
     /**
      * Method to enqueue a {@link FindValuePendingRequest}.
      *
+     * @param targetId the Node id we are looking for.
+     * @param listener a valid listener to the result of the enqueued Request.
      * @return true if the {@code PendingRequest} could be enqueued, false otherwise.
      */
     public boolean enqueueFindValue(@NonNull BinarySet targetId,
                                     @NonNull FindValueResultListener listener) {
         int id = generateId();
-        if(id == SENTINEL_ID)
+        if (id == SENTINEL_ID)
             return false;
         PendingRequest request = new FindValuePendingRequest(
                 id,
@@ -171,12 +180,14 @@ public class PendingRequestManager {
     /**
      * Method to enqueue a {@link StorePendingRequest}.
      *
+     * @param resourceToStore The {@code Resource} we are trying to store.
+     * @param listener        a valid listener to the result of the enqueued Request.
      * @return true if the {@code PendingRequest} could be enqueued, false otherwise.
      */
     public boolean enqueueStore(@NonNull StringResource resourceToStore,
                                 @NonNull StoreResultListener listener) {
         int id = generateId();
-        if(id == SENTINEL_ID)
+        if (id == SENTINEL_ID)
             return false;
         PendingRequest request = new StorePendingRequest(
                 id,
@@ -237,8 +248,8 @@ public class PendingRequestManager {
      * PendingRequest}.
      */
     private boolean isIdAvailable(int id) {
-        for(PendingRequest request : currentRequests){
-            if(request.getOperationId() == id)
+        for (PendingRequest request : currentRequests) {
+            if (request.getOperationId() == id)
                 return false;
         }
         return true;
@@ -247,10 +258,10 @@ public class PendingRequestManager {
     /**
      * @return An available id, or -1 if no further ids can be assigned.
      */
-    private int generateId(){
-        if(currentRequests.size() < capacity){
-            for(int id = 0; id < capacity; id++){
-                if(isIdAvailable(id))
+    private int generateId() {
+        if (currentRequests.size() < capacity) {
+            for (int id = 0; id < capacity; id++) {
+                if (isIdAvailable(id))
                     return id;
             }
         }

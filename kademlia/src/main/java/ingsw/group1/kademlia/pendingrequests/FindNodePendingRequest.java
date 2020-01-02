@@ -39,7 +39,7 @@ public class FindNodePendingRequest implements PendingRequest {
      */
     private static final int KAD_K = 10;
     /**
-     * The length of IDs in the Network and the number of buckets in the Routing Table.
+     * The length in bits of IDs in the Network and the number of buckets in the Routing Table.
      */
     private static final int KAD_N = 128;
 
@@ -100,6 +100,7 @@ public class FindNodePendingRequest implements PendingRequest {
     }
 
     /**
+     * @return {@link FindNodePendingRequest#operationId}
      * @see PendingRequest#getOperationId()
      */
     @Override
@@ -128,6 +129,7 @@ public class FindNodePendingRequest implements PendingRequest {
     }
 
     /**
+     * @param action the Action whose pertinence must be checked.
      * @return true if the given action can be used to continue the operation, false otherwise.
      * The action is always ignored if the current state is not
      * {@link RequestState#PENDING_RESPONSES}.
@@ -242,7 +244,8 @@ public class FindNodePendingRequest implements PendingRequest {
             resultListener.onFindNodeResult(operationId, targetId.getKey(), closestNode);
         } else {
             //If closestNode is null, then no Node closer than ourselves was found.
-            resultListener.onFindNodeResult(operationId, targetId.getKey(), nodeProvider.getRootNode());
+            resultListener.onFindNodeResult(operationId, targetId.getKey(),
+                    nodeProvider.getRootNode());
         }
         requestState = RequestState.COMPLETED;
     }

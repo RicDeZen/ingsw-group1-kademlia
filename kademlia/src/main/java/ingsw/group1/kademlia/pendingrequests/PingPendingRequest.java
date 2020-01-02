@@ -69,6 +69,7 @@ public class PingPendingRequest implements PendingRequest {
     }
 
     /**
+     * @return {@link PingPendingRequest#operationId}
      * @see PendingRequest#getOperationId()
      */
     @Override
@@ -95,6 +96,7 @@ public class PingPendingRequest implements PendingRequest {
     }
 
     /**
+     * @param action the Action whose pertinence must be checked.
      * @return true if the given action can be used to continue the operation, false otherwise.
      * The action is always ignored if the current state is not
      * {@link RequestState#PENDING_RESPONSES}.
