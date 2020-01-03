@@ -14,7 +14,7 @@ import static ingsw.group1.kademlia.KadAction.RESOURCE_SEPARATOR;
  * https://docs.google.com/document/d/1O7hO7yb5F4vtmm2AAnyiq0OqFqW_iqISUx0ac5sy1po/edit
  */
 public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, StringResource, Node<BinarySet>> {
-    private static int maxActionId;
+    private int maxActionId;
     private static final int DEFAULT_PARTS = KadAction.MIN_PARTS;
     private static final String PAYLOAD_IGNORED = "0w0";
     private static final String ILLEGAL_MAX_ID_MSG = "Can't initialize Builder, the defined max ID isn't compatible with class KadActions";
