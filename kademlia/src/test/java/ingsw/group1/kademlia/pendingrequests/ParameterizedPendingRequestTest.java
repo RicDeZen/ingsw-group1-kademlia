@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.robolectric.ParameterizedRobolectricTestRunner;
 
 import java.lang.reflect.Constructor;
