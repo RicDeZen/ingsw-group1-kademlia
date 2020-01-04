@@ -87,7 +87,7 @@ public class NodesRoutingTable extends RoutingTable<Node<BinarySet>, KBucket> {
 
     /**
      * @param position index of the bucket in buckets container
-     * @return the bucket at index i, null otherwise
+     * @return the bucket at index i if it exists, null otherwise
      */
     @Override
     public KBucket getBucket(int position) {
