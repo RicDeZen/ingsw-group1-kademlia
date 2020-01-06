@@ -7,7 +7,7 @@ import ingsw.group1.msglibrary.SMSPeer;
 
 /**
  * @author Niccolo' Turcato
- * Class that represents the Peer DistributedNetworkNode of DistributedNetwork
+ * Class that represents the Peer node of the Distributed Network
  * Address is a Bitset of fixed length
  */
 public class PeerNode implements Peer<BinarySet, PeerNode>, Node<BinarySet> {
@@ -21,13 +21,21 @@ public class PeerNode implements Peer<BinarySet, PeerNode>, Node<BinarySet> {
      */
     public PeerNode(@NonNull BinarySet buildingKey) {
         binaryKey = (BinarySet) buildingKey.clone();
+        physicalPeer = SMSPeer.INVALID_SMS_PEER;
     }
 
+    /**
+     * Sets the associated physical peer
+     * @param peer The associated physical peer
+     */
     public void setPhysicalPeer(SMSPeer peer) {
         if (peer != null && peer.isValid())
             physicalPeer = peer;
     }
 
+    /**
+     * @return The associated physical peer (if not present returns an invalid SMSPeer)
+     */
     public SMSPeer getPhysicalPeer() {
         return physicalPeer;
     }
@@ -66,7 +74,10 @@ public class PeerNode implements Peer<BinarySet, PeerNode>, Node<BinarySet> {
      */
     @Override
     public Object clone() {
-        return new PeerNode(binaryKey);
+        PeerNode cloned = new PeerNode(binaryKey);
+        if(physicalPeer != null)
+            cloned.setPhysicalPeer(physicalPeer);
+        return cloned;
     }
 
     /**
@@ -80,7 +91,7 @@ public class PeerNode implements Peer<BinarySet, PeerNode>, Node<BinarySet> {
         if (this == other)
             return true;
         if (other instanceof PeerNode)
-            return this.getAddress().equals(((PeerNode) other).getAddress());
+            return this.getKey().equals(((PeerNode) other).getKey());
         else return false;
     }
 

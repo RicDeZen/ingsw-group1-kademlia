@@ -137,7 +137,7 @@ public class FindNodePendingRequest implements PendingRequest {
      * @param visitedNode the Node to be marked as visited.
      */
     private void markVisited(PeerNode visitedNode) {
-        visitedNodes.put(targetId.getDistance(visitedNode.getAddress()), visitedNode);
+        visitedNodes.put(targetId.getDistance(visitedNode.getKey()), visitedNode);
         nodeProvider.visitNode(visitedNode);
     }
 

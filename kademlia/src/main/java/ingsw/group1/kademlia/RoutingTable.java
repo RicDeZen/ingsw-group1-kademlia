@@ -70,13 +70,13 @@ public abstract class RoutingTable<B extends Bucket<Node<BinarySet>>> {
      * @param node
      * @return the closest Node at the node in the routing table if it is present, otherwise null
      */
-    public abstract Node getClosest(Node<BinarySet> node);
+    public abstract Node<BinarySet> getClosest(Node<BinarySet> node);
 
     /**
      * @param node
      * @return the closest K Nodes at the node in the routing table if it is present, otherwise null
      */
-    public abstract Node[] getKClosest(Node<BinarySet> node);
+    public abstract Node<BinarySet>[] getKClosest(Node<BinarySet> node);
 
     /**
      * @return number of nodes present in the routing table
