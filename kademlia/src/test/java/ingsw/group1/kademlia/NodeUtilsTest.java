@@ -17,7 +17,7 @@ public class NodeUtilsTest {
     private SMSPeer peer;
     private Resource<String, String> resource;
     private PeerNode node;
-    private int numBit = 128;
+    private int numBit = KademliaConstants.KADEMLIA_DEFAULT_ID_LENGTH;
 
     @Before
     public void init(){

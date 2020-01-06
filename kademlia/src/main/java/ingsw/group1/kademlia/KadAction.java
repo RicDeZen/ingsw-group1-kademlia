@@ -28,7 +28,7 @@ public class KadAction implements DistributedNetworkAction<SMSPeer, String, SMSM
     private static final int PAYLOAD_START_INDEX=14;
     private static final char PARSING_CHARACTER='0';
     // The length of the Node_ID
-    private static final int ID_LENGTH = 128;
+    private static final int ID_LENGTH = KademliaConstants.KADEMLIA_DEFAULT_ID_LENGTH;
     public static final int MIN_ID = 1;
     public static final int MAX_ID = 999;
     public static final String RESOURCE_SEPARATOR="\r";

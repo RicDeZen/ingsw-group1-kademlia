@@ -56,7 +56,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildPingAnswTest(){
         KadAction ping = testingBuilder.buildPing(random.nextInt(maxTestingID-1)+1, testPeer);
-        action = testingBuilder.buildPingAnsw(ping);
+        action = testingBuilder.buildPingAnswer(ping);
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.PING_ANSWER, action.getActionType());
@@ -66,8 +66,8 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildPingAnswINCOMPATIBLEREQTest(){
         KadAction invite = testingBuilder.buildInvite(random.nextInt(maxTestingID-1)+1, testPeer);
-        action = testingBuilder.buildPingAnsw(invite);
-        assertEquals(action, KadActionsBuilder.INVALID_ACTION);
+        action = testingBuilder.buildPingAnswer(invite);
+        assertEquals(action, KadAction.INVALID_KAD_ACTION);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildInviteAnswTest(){
         KadAction invite = testingBuilder.buildInvite(random.nextInt(maxTestingID-1)+1, testPeer);
-        action = testingBuilder.buildInviteAnsw(invite, true);
+        action = testingBuilder.buildInviteAnswer(invite, true);
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.INVITE_ANSWER, action.getActionType());
@@ -93,8 +93,8 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildInviteAnswINCOMPATIBLEREQTest(){
         KadAction ping = testingBuilder.buildPing(random.nextInt(maxTestingID-1)+1, testPeer);
-        action = testingBuilder.buildInviteAnsw(ping, false);
-        assertEquals(action, KadActionsBuilder.INVALID_ACTION);
+        action = testingBuilder.buildInviteAnswer(ping, false);
+        assertEquals(action, KadAction.INVALID_KAD_ACTION);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class KadActionsBuilderTest {
     public void KadActionsBuilder_buildStoreNodeAnswTest(){
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
         KadAction storeNode = testingBuilder.buildStore(random.nextInt(maxTestingID-1)+1, testPeer, new PeerNode(key));
-        action = testingBuilder.buildStoreAnsw(storeNode, new SMSPeer[]{testPeer})[0]; //1 smspeer -> 1 action
+        action = testingBuilder.buildStoreAnswer(storeNode, new SMSPeer[]{testPeer})[0]; //1 smspeer -> 1 action
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.STORE_ANSWER, action.getActionType());
@@ -123,8 +123,8 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildStoreNodeAnswINCOMPATIBLEREQTest(){
         KadAction ping = testingBuilder.buildPing(random.nextInt(maxTestingID-1)+1, testPeer);
-        action = testingBuilder.buildStoreAnsw(ping, new SMSPeer[]{testPeer})[0];
-        assertEquals(action, KadActionsBuilder.INVALID_ACTION);
+        action = testingBuilder.buildStoreAnswer(ping, new SMSPeer[]{testPeer})[0];
+        assertEquals(action, KadAction.INVALID_KAD_ACTION);
     }
 
     @Test
@@ -134,13 +134,13 @@ public class KadActionsBuilderTest {
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.STORE, action.getActionType());
         assertEquals(KadAction.PayloadType.RESOURCE, action.getPayloadType());
-        assertEquals(testResource.getName()+KadActionsBuilder.RESOURCE_SEPARATOR+testResource.getValue(), action.getPayload());
+        assertEquals(testResource.getName()+KadAction.RESOURCE_SEPARATOR+testResource.getValue(), action.getPayload());
     }
 
     @Test
     public void KadActionsBuilder_buildStoreResAnswTest(){
         KadAction storeResource = testingBuilder.buildStore(random.nextInt(maxTestingID-1)+1, testPeer, testResource);
-        action = testingBuilder.buildStoreAnsw(storeResource, false);
+        action = testingBuilder.buildStoreAnswer(storeResource, false);
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.STORE_ANSWER, action.getActionType());
@@ -151,8 +151,8 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildStoreResAnswINCOMPATIBLEREQTest(){
         KadAction ping = testingBuilder.buildPing(random.nextInt(maxTestingID-1)+1, testPeer);
-        action = testingBuilder.buildStoreAnsw(ping,true);
-        assertEquals(action, KadActionsBuilder.INVALID_ACTION);
+        action = testingBuilder.buildStoreAnswer(ping,true);
+        assertEquals(action, KadAction.INVALID_KAD_ACTION);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class KadActionsBuilderTest {
     public void KadActionsBuilder_buildFindNodeAnswTest(){
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
         KadAction findNode = testingBuilder.buildFindNode(random.nextInt(maxTestingID-1)+1, testPeer, new PeerNode(key));
-        action = testingBuilder.buildFindNodeAnsw(findNode, new SMSPeer[]{testPeer})[0];
+        action = testingBuilder.buildFindNodeAnswer(findNode, new SMSPeer[]{testPeer})[0];
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.FIND_NODE_ANSWER, action.getActionType());
@@ -182,8 +182,8 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildFindNodeAnswINCOMPATIBLEREQTest(){
         KadAction ping = testingBuilder.buildPing(random.nextInt(maxTestingID-1)+1, testPeer);
-        action = testingBuilder.buildFindNodeAnsw(ping,new SMSPeer[]{testPeer, testPeer})[0];
-        assertEquals(action, KadActionsBuilder.INVALID_ACTION);
+        action = testingBuilder.buildFindNodeAnswer(ping,new SMSPeer[]{testPeer, testPeer})[0];
+        assertEquals(action, KadAction.INVALID_KAD_ACTION);
     }
 
     @Test
@@ -201,7 +201,7 @@ public class KadActionsBuilderTest {
     public void KadActionsBuilder_buildFindValueResFOUNDAnswTest(){
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
         KadAction findResource = testingBuilder.buildFindValue(random.nextInt(maxTestingID-1)+1, testPeer, new ResourceNode(key, "stuff"));
-        action = testingBuilder.buildFindValueAnsw(findResource, testResource);
+        action = testingBuilder.buildFindValueAnswer(findResource, testResource);
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.FIND_VALUE_ANSWER, action.getActionType());
@@ -211,15 +211,15 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildFindValueResFOUNDAnswINCOMPATIBLEREQTest(){
         KadAction ping = testingBuilder.buildPing(random.nextInt(maxTestingID-1)+1, testPeer);
-        action = testingBuilder.buildFindValueAnsw(ping, testResource);
-        assertEquals(action, KadActionsBuilder.INVALID_ACTION);
+        action = testingBuilder.buildFindValueAnswer(ping, testResource);
+        assertEquals(action, KadAction.INVALID_KAD_ACTION);
     }
 
     @Test
     public void KadActionsBuilder_buildFindValueResNOTFOUNDAnswTest() {
         BinarySet key = new BinarySet("AAFFFFFFFF0000");
         KadAction findResource = testingBuilder.buildFindValue(random.nextInt(maxTestingID - 1) + 1, testPeer, new ResourceNode(key, "stuff"));
-        action = testingBuilder.buildFindValueAnsw(findResource, new SMSPeer[]{testPeer})[0];
+        action = testingBuilder.buildFindValueAnswer(findResource, new SMSPeer[]{testPeer})[0];
         testValidity(1, 1);
         testPeerCoherent(testPeer);
         assertEquals(KadAction.ActionType.FIND_VALUE_ANSWER, action.getActionType());
@@ -230,7 +230,7 @@ public class KadActionsBuilderTest {
     @Test
     public void KadActionsBuilder_buildFindValueResNOTFOUNDAnswINCOMPATIBLEREQTest(){
         KadAction ping = testingBuilder.buildPing(random.nextInt(maxTestingID-1)+1, testPeer);
-        action = testingBuilder.buildFindValueAnsw(ping, new SMSPeer[]{testPeer})[0];
-        assertEquals(action, KadActionsBuilder.INVALID_ACTION);
+        action = testingBuilder.buildFindValueAnswer(ping, new SMSPeer[]{testPeer})[0];
+        assertEquals(action, KadAction.INVALID_KAD_ACTION);
     }
 }

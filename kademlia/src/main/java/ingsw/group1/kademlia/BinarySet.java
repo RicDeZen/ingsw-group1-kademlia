@@ -16,8 +16,8 @@ public class BinarySet implements Comparable<BinarySet>, Cloneable {
     /**
      * Constructor that initializes the key with the given value
      *
-     * @param buildingKey given value for the Key
-     * @throws IllegalArgumentException if the given BitSet is empty
+     * @param buildingKey Given value for the Key
+     * @throws IllegalArgumentException If the given BitSet is empty
      */
     public BinarySet(@NonNull BitSet buildingKey) {
         if (buildingKey.size() > 0)
@@ -28,21 +28,20 @@ public class BinarySet implements Comparable<BinarySet>, Cloneable {
     /**
      * Constructor that builds a BinarySet starting from a string containing hexadecimal digits
      *
-     * @param hexString a string containing hexadecimal digits (length must be multiple of 2, write 0A instead of A)
-     * @throws IllegalArgumentException, if the String length isn't multiple of 2, or contains invalid HEX string
+     * @param hexString A string containing hexadecimal digits (length must be multiple of 2, write 0A instead of A)
+     * @throws IllegalArgumentException If the String length isn't multiple of 2, or contains invalid HEX string
      */
     public BinarySet(@NonNull String hexString) {
         this(BitSetUtils.decodeHexString(hexString));
     }
 
     /**
-     * @param set another object of BinarySet to compare
-     * @return @return a negative integer, zero, or a positive integer as this < other set, the two are equal, this > other set.
+     * @param set Another object of BinarySet to compare
+     * @return A negative integer, zero, or a positive integer as this < other set, the two are equal, this > other set.
      */
     public int compareTo(@NonNull BinarySet set) {
         if (this.equals(set)) return 0;
-        BitSet distance = set.getKey();
-        distance.xor(key);
+        BitSet distance = set.getDistance(this).getKey();
         int firstDifferent = distance.length() - 1;
         if (firstDifferent == -1)
             return 0; //actually, this is redundant
@@ -50,22 +49,22 @@ public class BinarySet implements Comparable<BinarySet>, Cloneable {
     }
 
     /**
-     * @return new BinarySet equals to this
+     * @return A new BinarySet equals to this
      */
     public Object clone() {
         return new BinarySet((BitSet) key.clone());
     }
 
     /**
-     * @return number of bits that compose the BitSet key
+     * @return The size of the BitSet key
      */
     public int keyLength() {
         return key.size();
     }
 
     /**
-     * @param set node of which calculate distance
-     * @return the distance in XOR metric
+     * @param set Node of which calculate distance
+     * @return The distance in XOR metric
      */
     public BinarySet getDistance(@NonNull BinarySet set) {
         BitSet distance = getKey();
@@ -74,7 +73,7 @@ public class BinarySet implements Comparable<BinarySet>, Cloneable {
     }
 
     /**
-     * @return the position of most significant bit at 1, -1 if key is zero
+     * @return The position of most significant bit at 1, -1 if key is zero
      */
     public int getFirstPositionOfOne() {
         BitSet bitSet = getKey();
@@ -82,15 +81,15 @@ public class BinarySet implements Comparable<BinarySet>, Cloneable {
     }
 
     /**
-     * @return the BitSet key
+     * @return The BitSet key
      */
     public BitSet getKey() {
         return (BitSet) key.clone();
     }
 
     /**
-     * @param other peer to confront
-     * @return true if this peer and the other are equals, false otherwise
+     * @param other Peer to confront
+     * @return True if this peer and the other are equals, false otherwise
      */
     @Override
     public boolean equals(Object other) {
@@ -104,7 +103,7 @@ public class BinarySet implements Comparable<BinarySet>, Cloneable {
     }
 
     /**
-     * @return the key converted to Hexadecimal number written on a String
+     * @return The key converted to Hexadecimal number written on a String
      */
     public String toHex() {
         return BitSetUtils.BitSetsToHex(key);
