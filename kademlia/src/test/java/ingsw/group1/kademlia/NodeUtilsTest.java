@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.BitSet;
-
-import ingsw.group1.msglibrary.Peer;
 import ingsw.group1.msglibrary.SMSPeer;
 import ingsw.group1.repnetwork.Resource;
 import ingsw.group1.repnetwork.StringResource;

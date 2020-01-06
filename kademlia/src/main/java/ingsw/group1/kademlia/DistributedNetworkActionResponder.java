@@ -3,16 +3,12 @@ package ingsw.group1.kademlia;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
 import ingsw.group1.msglibrary.SMSManager;
 import ingsw.group1.msglibrary.SMSPeer;
-import ingsw.group1.repnetwork.Resource;
 import ingsw.group1.repnetwork.StringResource;
 
 import static ingsw.group1.kademlia.KadAction.ActionType.*;
@@ -102,7 +98,6 @@ public class DistributedNetworkActionResponder {
         if (action.getActionType() == FIND_NODE
                 && action.getPayloadType() == PayloadType.NODE_ID) {
             BinarySet targetAddress = new BinarySet(action.getPayload());
-            Node<BinarySet> searched = new PeerNode(targetAddress);
 
             SMSPeer[] peersFound = findClosestPeers(nodeDataProvider, targetAddress);
 

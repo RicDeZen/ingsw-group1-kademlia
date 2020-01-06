@@ -6,7 +6,7 @@ import java.util.Comparator;
  * Compares Nodes based on the distance to a target node
  */
 public class NodesComparator implements Comparator<Node<BinarySet>> {
-    Node<BinarySet> targetNode;
+    private Node<BinarySet> targetNode;
     /**
      * Builds this comparator with a target node
      */
