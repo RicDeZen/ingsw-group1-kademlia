@@ -2,24 +2,22 @@ package ingsw.group1.kademlia;
 
 import ingsw.group1.msglibrary.SMSPeer;
 import ingsw.group1.repnetwork.StringResource;
+import static ingsw.group1.kademlia.KadAction.INVALID_KAD_ACTION;
+import static ingsw.group1.kademlia.KadAction.RESOURCE_SEPARATOR;
+
 
 /**
  * @author Niccolo' Turcato
  * Builds KadAction objs with randomized ids (1-999)
  * <p>
- * TODO: add detailed description (summary from De Zen's Paper)
+ * Based on:
+ * https://docs.google.com/document/d/1O7hO7yb5F4vtmm2AAnyiq0OqFqW_iqISUx0ac5sy1po/edit
  */
 public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, StringResource, Node<BinarySet>> {
-
-
-    private static int MAX_ACTION_ID;
-    private static int DEFAULT_PARTS = KadAction.MIN_PARTS;
+    private int maxActionId;
+    private static final int DEFAULT_PARTS = KadAction.MIN_PARTS;
     private static final String PAYLOAD_IGNORED = "0w0";
     private static final String ILLEGAL_MAX_ID_MSG = "Can't initialize Builder, the defined max ID isn't compatible with class KadActions";
-    public static final String RESOURCE_SEPARATOR = KadAction.RESOURCE_SEPARATOR;
-
-    public static final KadAction INVALID_ACTION = KadAction.INVALID_KAD_ACTION;
-
 
     /**
      * Constructor for this builder, defines a new max limit for IDs, min limit remains the one defined in KadAction
@@ -28,7 +26,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      */
     public KadActionsBuilder(int maxActionID) {
         if (maxActionID >= KadAction.MIN_ID && maxActionID <= KadAction.MAX_ID)
-            MAX_ACTION_ID = maxActionID;
+            maxActionId = maxActionID;
         else
             throw new IllegalArgumentException(ILLEGAL_MAX_ID_MSG);
 
@@ -38,17 +36,17 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * Default constructor, builder will accept all valid IDs, (as indicated in KadAction)
      */
     public KadActionsBuilder() {
-        MAX_ACTION_ID = KadAction.MAX_ID;
+        maxActionId = KadAction.MAX_ID;
     }
 
     private boolean isValidID(int id) {
-        return id >= KadAction.MIN_ID && id <= MAX_ACTION_ID;
+        return id >= KadAction.MIN_ID && id <= maxActionId;
     }
 
     /**
      * @param peer     the peer that will be pinged
      * @param actionID the unique ID of the action
-     * @return if the given ID is valid: an action built to execute the ping command to the peer, otherwise returns an INVALID_ACTION
+     * @return if the given ID is valid: an action built to execute the ping command to the peer, otherwise returns an INVALID_KAD_ACTION
      */
     public KadAction buildPing(int actionID, SMSPeer peer) {
         if (isValidID(actionID))
@@ -60,14 +58,14 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
                     KadAction.PayloadType.IGNORED,
                     PAYLOAD_IGNORED
             );
-        else return INVALID_ACTION;
+        else return INVALID_KAD_ACTION;
     }
 
     /**
      * @param request the ping request received from a peer (that will be the receiver for the response)
      * @return a response action built to respond to the received ping command from the peer, or an invalid KAD action if the given action wasn't coherent with this building method (actionType)
      */
-    public KadAction buildPingAnsw(KadAction request) {
+    public KadAction buildPingAnswer(KadAction request) {
         if (request.getActionType() == KadAction.ActionType.PING)
             return new KadAction(
                     request.getPeer(),
@@ -78,13 +76,13 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
                     PAYLOAD_IGNORED
             );
         else
-            return INVALID_ACTION;
+            return INVALID_KAD_ACTION;
     }
 
     /**
      * @param peer     the receiving peer (the peer to invite)
      * @param actionID the unique ID of the action
-     * @return if the given ID is valid: an action built to execute the invite command to the peer, otherwise returns an INVALID_ACTION
+     * @return if the given ID is valid: an action built to execute the invite command to the peer, otherwise returns an INVALID_KAD_ACTION
      */
     public KadAction buildInvite(int actionID, SMSPeer peer) {
         if (isValidID(actionID))
@@ -97,7 +95,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
                     PAYLOAD_IGNORED
             );
         else
-            return INVALID_ACTION;
+            return INVALID_KAD_ACTION;
     }
 
     /**
@@ -105,7 +103,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * @param accepted set to indicate if the answer accepts the invite or if it rejects it
      * @return a response action built to respond to the received invite, or an invalid KAD action if the given action wasn't coherent with this building method (actionType)
      */
-    public KadAction buildInviteAnsw(KadAction request, boolean accepted) {
+    public KadAction buildInviteAnswer(KadAction request, boolean accepted) {
         if (request.getActionType() == KadAction.ActionType.INVITE)
             return new KadAction(
                     request.getPeer(),
@@ -116,7 +114,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
                     Boolean.toString(accepted)
             );
         else
-            return INVALID_ACTION;
+            return INVALID_KAD_ACTION;
     }
 
 
@@ -124,7 +122,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * @param actionID the unique ID of the action
      * @param peer     the receiving peer
      * @param node     the node to be stored
-     * @return if the given ID is valid: an action built to execute the store (node) command to the peer, otherwise returns an INVALID_ACTION
+     * @return if the given ID is valid: an action built to execute the store (node) command to the peer, otherwise returns an INVALID_KAD_ACTION
      */
     public KadAction buildStore(int actionID, SMSPeer peer, Node<BinarySet> node) {
         if (isValidID(actionID))
@@ -137,14 +135,14 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
                     node.getKey().toHex()
             );
         else
-            return INVALID_ACTION;
+            return INVALID_KAD_ACTION;
     }
 
     /**
      * @param actionID the unique ID of the action
      * @param peer     the receiving peer
      * @param resource the resource to be stored
-     * @return if the given ID is valid: an action built to execute the store (resource) command to the peer, otherwise returns an INVALID_ACTION
+     * @return if the given ID is valid: an action built to execute the store (resource) command to the peer, otherwise returns an INVALID_KAD_ACTION
      */
     public KadAction buildStore(int actionID, SMSPeer peer, StringResource resource) {
         if (isValidID(actionID))
@@ -157,7 +155,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
                     resource.getName() + RESOURCE_SEPARATOR + resource.getValue()
             );
         else
-            return INVALID_ACTION;
+            return INVALID_KAD_ACTION;
     }
 
     /**
@@ -165,7 +163,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * @param peers   the peers of which forward addresses
      * @return an array of responses (one for each peer in peers) for the received request, or an invalid KAD action if the given action wasn't coherent with this building method (actionType)
      */
-    public KadAction[] buildStoreAnsw(KadAction request, SMSPeer[] peers) {
+    public KadAction[] buildStoreAnswer(KadAction request, SMSPeer[] peers) {
         if (request.getActionType() == KadAction.ActionType.STORE) {
             KadAction[] responses = new KadAction[peers.length];
             for (int i = 0; i < peers.length; i++) {
@@ -180,7 +178,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
             }
             return responses;
         } else
-            return new KadAction[]{INVALID_ACTION};
+            return new KadAction[]{INVALID_KAD_ACTION};
     }
 
     /**
@@ -188,7 +186,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * @param confirmStore set to confirm that the store command has been executed
      * @return a response action built to respond to the received store (resource), or an invalid KAD action if the given action wasn't coherent with this building method (actionType)
      */
-    public KadAction buildStoreAnsw(KadAction request, boolean confirmStore) {
+    public KadAction buildStoreAnswer(KadAction request, boolean confirmStore) {
         if (request.getActionType() == KadAction.ActionType.STORE)
             return new KadAction(
                     request.getPeer(),
@@ -199,7 +197,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
                     Boolean.toString(confirmStore)
             );
         else
-            return INVALID_ACTION;
+            return INVALID_KAD_ACTION;
     }
 
 
@@ -207,7 +205,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * @param actionID the unique ID of the action
      * @param peer     the peer that will receive the built action command
      * @param node     the node of which find its address (on the used network)
-     * @return if the given ID is valid: an action built to execute the find node command to the peer, otherwise returns an INVALID_ACTION
+     * @return if the given ID is valid: an action built to execute the find node command to the peer, otherwise returns an INVALID_KAD_ACTION
      */
     public KadAction buildFindNode(int actionID, SMSPeer peer, Node<BinarySet> node) {
         return new KadAction(
@@ -225,7 +223,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * @param peers   the peers that are closest to the searched node (or the searched node's corresponding peer)
      * @return an array of responses (one for each peer in peers) for the received request, or an invalid KAD action if the given action wasn't coherent with this building method (actionType)
      */
-    public KadAction[] buildFindNodeAnsw(KadAction request, SMSPeer[] peers) {
+    public KadAction[] buildFindNodeAnswer(KadAction request, SMSPeer[] peers) {
         if (request.getActionType() == KadAction.ActionType.FIND_NODE) {
             KadAction[] responses = new KadAction[peers.length];
             for (int i = 0; i < peers.length; i++) {
@@ -241,7 +239,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
             return responses;
         }
         else
-            return new KadAction[]{INVALID_ACTION};
+            return new KadAction[]{INVALID_KAD_ACTION};
     }
 
 
@@ -249,7 +247,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * @param actionID     the unique ID of the action
      * @param peer         the peer that will receive the built action command
      * @param resourceNode the node representing the searched resource
-     * @return if the given ID is valid: an action built to execute the find value command to the peer, otherwise returns an INVALID_ACTION
+     * @return if the given ID is valid: an action built to execute the find value command to the peer, otherwise returns an INVALID_KAD_ACTION
      */
     public KadAction buildFindValue(int actionID, SMSPeer peer, Node<BinarySet> resourceNode) {
         if (isValidID(actionID))
@@ -262,7 +260,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
                     resourceNode.getKey().toHex()
             );
         else
-            return INVALID_ACTION;
+            return INVALID_KAD_ACTION;
     }
 
     /**
@@ -270,7 +268,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * @param resource if found the searched resource (by the requesting peer), otherwise a resource containing a fixed token (that indicated that the resource hasn't been found)
      * @return a response action built to respond to the received find value command (of a resource), or an invalid KAD action if the given action wasn't coherent with this building method (actionType)
      */
-    public KadAction buildFindValueAnsw(KadAction request, StringResource resource) {
+    public KadAction buildFindValueAnswer(KadAction request, StringResource resource) {
         if(request.getActionType() == KadAction.ActionType.FIND_VALUE)
         return new KadAction(
                 request.getPeer(),
@@ -281,7 +279,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
                 resource.getName() + RESOURCE_SEPARATOR + resource.getValue()
         );
         else
-            return INVALID_ACTION;
+            return INVALID_KAD_ACTION;
     }
 
     /**
@@ -289,7 +287,7 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
      * @param peers   the peers corresponding to the nodes that are closest to the searched resource
      * @return an array of responses (one for each peer in peers) for the received request, or an invalid KAD action if the given action wasn't coherent with this building method (actionType)
      */
-    public KadAction[] buildFindValueAnsw(KadAction request, SMSPeer[] peers) {
+    public KadAction[] buildFindValueAnswer(KadAction request, SMSPeer[] peers) {
         if(request.getActionType() == KadAction.ActionType.FIND_VALUE) {
             KadAction[] responses = new KadAction[peers.length];
             for (int i = 0; i < peers.length; i++) {
@@ -305,6 +303,6 @@ public class KadActionsBuilder implements ActionsBuilder<KadAction, SMSPeer, Str
             return responses;
         }
         else
-            return new KadAction[]{ INVALID_ACTION};
+            return new KadAction[]{INVALID_KAD_ACTION};
     }
 }
