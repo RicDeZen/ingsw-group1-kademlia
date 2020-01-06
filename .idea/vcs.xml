@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ingsw-group1-message-library" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ingsw-group1-replicated-network" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ingsw-group1-replicated-network/ingsw-group1-message-library" vcs="Git" />
   </component>

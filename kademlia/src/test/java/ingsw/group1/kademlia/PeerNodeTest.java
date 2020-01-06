@@ -41,8 +41,8 @@ public class PeerNodeTest {
         a.set(0, 4);
         BinarySet set = new BinarySet(a);
         PeerNode node = new PeerNode(set);
-        assertEquals(a, node.getAddress().getKey());
-        assertEquals(set, node.getAddress());
+        assertEquals(a, node.getKey().getKey());
+        assertEquals(set, node.getKey());
     }
 
 

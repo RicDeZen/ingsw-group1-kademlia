@@ -24,7 +24,7 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
 
     /**
      * Constructor where the routing table length is sizeTable
-     * @param nodeOwner
+     * @param nodeOwner The node owner of this routing table (representing myself)
      * @param sizeTable dimension of routing table
      */
     public NodesRoutingTable(Node<BinarySet> nodeOwner, int sizeTable){
@@ -110,7 +110,7 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
      * @return the closest Node at the node in the routing table if it is present, null otherwise
      */
     @Override
-    public Node getClosest(Node<BinarySet> node) {
+    public Node<BinarySet> getClosest(Node<BinarySet> node) {
         Node[] nodesClosest = getKClosest(node);
         if (nodesClosest != null){
             int minDistance = sizeTable+1;
@@ -135,7 +135,7 @@ public class NodesRoutingTable extends RoutingTable<KBucket> {
      * @return the closest K Nodes at the node in the routing table if it is present, null otherwise
      */
     @Override
-    public Node[] getKClosest(Node<BinarySet> node) {
+    public Node<BinarySet>[] getKClosest(Node<BinarySet> node) {
         int position;
         if(!node.equals(nodeOwner))
             position = getLocation(node); //the higher the position, the closer it is
