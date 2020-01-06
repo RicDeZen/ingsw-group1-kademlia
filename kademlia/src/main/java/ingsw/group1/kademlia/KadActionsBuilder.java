@@ -2,6 +2,7 @@ package ingsw.group1.kademlia;
 
 import ingsw.group1.msglibrary.SMSPeer;
 import ingsw.group1.repnetwork.StringResource;
+
 import static ingsw.group1.kademlia.KadAction.INVALID_KAD_ACTION;
 import static ingsw.group1.kademlia.KadAction.RESOURCE_SEPARATOR;
 

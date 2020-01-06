@@ -16,7 +16,7 @@ import ingsw.group1.repnetwork.StringResource;
  * @author  Pardeep Kumar, Riccardo De Zen
  */
 
-public class KadAction implements DistributedNetworkAction<String, SMSPeer, SMSMessage> {
+public class KadAction implements DistributedNetworkAction<SMSPeer, String, SMSMessage> {
     private static final int OPERATION_ID_LENGTH=4;
     private static final int CURRENT_PART_LENGTH=4;
     private static final int TOTAL_PARTS_LENGTH=4;

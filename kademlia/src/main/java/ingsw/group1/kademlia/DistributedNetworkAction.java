@@ -8,10 +8,11 @@ import ingsw.group1.msglibrary.Peer;
  * This interface tries to be unrelated to the algorithm used to implement the Distributed Network.
  *
  * @param <P> type of {@code Peer} the Network Action uses.
+ * @param <D> type of data {@code M} carries.
  * @param <M> type of {@code Message} the Network Action uses.
  * @author Niccolò Turcato, Riccardo De Zen
  */
-public interface DistributedNetworkAction<D, P extends Peer, M extends Message<D, P>> {
+public interface DistributedNetworkAction<P extends Peer, D, M extends Message<P, D>> {
     /**
      * Method returning whether an Action is valid. Depending on the implementation this could
      * always be true for Actions whose constructor came to an end.
