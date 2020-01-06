@@ -18,7 +18,7 @@ public class NodeUtilsTest {
     Peer<String> peer;
     Resource<String, String> resource;
     PeerNode node;
-    int numBit = 128;
+    int numBit = KademliaConstants.KADEMLIA_DEFAULT_ID_LENGTH;
 
     @Before
     public void init(){

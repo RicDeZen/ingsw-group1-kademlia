@@ -13,7 +13,7 @@ import ingsw.group1.repnetwork.Resource;
  */
 public class NodeUtils {
 
-    public static final int DEFAULT_KEY_LENGTH = 128;
+    public static final int DEFAULT_KEY_LENGTH = KademliaConstants.KADEMLIA_DEFAULT_ID_LENGTH;
 
     private final static String KEY_LENGTH_INVALID_MSG = "invalid key length, must be > 0 && <=160";
     private final static String PEER_INVALID_MSG = "invalid or null Peer";
